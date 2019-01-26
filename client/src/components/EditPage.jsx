@@ -1,0 +1,183 @@
+/* jshint ignore: start */
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
+import {
+  Container,
+  ButtonDropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle
+} from "reactstrap";
+import { Modal } from "react-bootstrap";
+
+// Data
+// import Questions from "../data/questions.json";
+
+import Navbar from "./MyNavbar";
+import Footer from "./Footer";
+
+class EditPage extends Component {
+  constructor() {
+    super();
+    this.handleShow = this.handleShow.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.state = {
+      exitingModules: [],
+      show: false
+    };
+  }
+
+  handleClose() {
+    this.setState({ show: false });
+  }
+  handleShow() {
+    this.setState({ show: true });
+  }
+
+  componentDidMount() {
+    fetch("/admin/edit")
+      .then(res => res.json())
+      .then(exitingModules =>
+        this.setState({ exitingModules }, () => {
+          console.log(exitingModules);
+        })
+      );
+  }
+
+  getExistingModules() {
+    return this.state.exitingModules.map(module => (
+      <React.Fragment key={module.title}>
+        <div className="text-white m-5 bg-dark" style={{ height: "100px" }}>
+          <Link
+            style={{
+              color: "inherit",
+              textDecoration: "none",
+              opacity: 1,
+              display: "block",
+              width: "100%",
+              height: "50px",
+              transition: "0.5s ease",
+              backfaceVisibility: "hidden"
+            }}
+            to={`/admin/edit/editmodule/${module.title}`}
+          >
+            {module.title}
+          </Link>
+        </div>
+        <hr className="d-block" style={{ width: "80%" }} />
+      </React.Fragment>
+    ));
+  }
+
+  render() {
+    return (
+      <React.Fragment>
+        <Navbar role={this.props.role} page="quiz" />
+        <Container>
+          <h2 className="text-center mt-5 pt-5">What you can do</h2>
+          <div className="row">
+            <div className="col" />
+            {/* <div className="col-9"> */}
+            <p className="pb-5 m-5">
+              Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              Repudiandae nulla nisi illo facere corrupti perferendis
+              consectetur voluptatem harum. Harum at velit illum laboriosam
+              debitis. Alias, quis tempore in aliquam ipsum rem fuga modi
+              sapiente quidem distinctio, sequi, unde repudiandae veritatis
+              ducimus error excepturi voluptatibus nam ad qui itaque. Temporibus
+              similique provident eveniet corporis excepturi at aut nihil ex
+              quidem. Itaque facilis voluptate tempore vitae libero illum
+              quaerat, distinctio at officiis, perferendis quidem repellat
+              doloribus obcaecati fugiat voluptatibus iusto optio. Debitis modi,
+              possimus placeat exercitationem quae assumenda delectus
+              consequatur illum alias iste eos pariatur ut corrupti aut tempore
+              voluptatem reiciendis tempora quibusdam eaque error veniam
+              corporis, velit adipisci a? Expedita est perspiciatis tempore
+              tempora. Exercitationem dolorem architecto animi sit consequuntur
+              quia dignissimos ad consectetur modi. Ratione eveniet sunt
+              molestias cum debitis vitae id nihil dicta atque dolor ipsam
+              commodi rerum exercitationem facilis neque natus doloribus eos
+              totam asperiores sed, laudantium tempora. Sint impedit, aspernatur
+              perspiciatis iure mollitia libero doloremque nisi delectus?
+              Incidunt voluptatem earum nulla distinctio placeat beatae atque
+              veritatis cum similique! Obcaecati delectus, temporibus quos, illo
+              commodi provident ducimus dolorum ipsa quia totam velit tempora id
+              officia repudiandae quam eligendi odit minus, recusandae cumque
+              aliquam doloribus beatae. Iste, nemo cumque! Lorem ipsum dolor sit
+              amet consectetur adipisicing elit. Repudiandae nulla nisi illo
+              facere corrupti perferendis consectetur voluptatem harum. Harum at
+              velit illum laboriosam debitis. Alias, quis tempore in aliquam
+              ipsum rem fuga modi sapiente quidem distinctio, sequi, unde
+              repudiandae veritatis ducimus error excepturi voluptatibus nam ad
+              qui itaque. Temporibus similique provident eveniet corporis
+              excepturi at aut nihil ex quidem. Itaque facilis voluptate tempore
+              vitae libero illum quaerat, distinctio at officiis, perferendis
+              quidem repellat doloribus obcaecati fugiat voluptatibus iusto
+              optio. Debitis modi, possimus placeat exercitationem quae
+              assumenda delectus consequatur illum alias iste eos pariatur ut
+              corrupti aut tempore voluptatem reiciendis tempora quibusdam eaque
+              error veniam corporis, velit adipisci a? Expedita est perspiciatis
+              tempore tempora. Exercitationem dolorem architecto animi sit
+              consequuntur quia dignissimos ad consectetur modi. Ratione eveniet
+              sunt molestias cum debitis vitae id nihil dicta atque dolor ipsam
+              commodi rerum exercitationem facilis neque natus doloribus eos
+              totam asperiores sed, laudantium tempora. Sint impedit, aspernatur
+              perspiciatis iure mollitia libero doloremque nisi delectus?
+              Incidunt voluptatem earum nulla distinctio placeat beatae atque
+              veritatis cum similique! Obcaecati delectus, temporibus quos, illo
+              commodi provident ducimus dolorum ipsa quia totam velit tempora id
+              officia repudiandae quam eligendi odit minus, recusandae cumque
+              aliquam doloribus beatae. Iste, nemo cumque!
+            </p>
+            {/* </div> */}
+            <div className="col" />
+          </div>
+          <div className="row pb-5">
+            <div className="col-md" />
+            <div className="btn-group" role="group" aria-label="...">
+              <ButtonDropdown isOpen={isOpen} toggle={toggle}>
+                <DropdownToggle caret color="primary">
+                  Text
+                </DropdownToggle>
+                <DropdownMenu>
+                  <DropdownItem header>Header</DropdownItem>
+                  <DropdownItem disabled>Action</DropdownItem>
+                  <DropdownItem>Another Action</DropdownItem>
+                  <DropdownItem divider />
+                  <DropdownItem>Another Action</DropdownItem>
+                </DropdownMenu>
+              </ButtonDropdown>
+              {/* <Link
+                to="/admin/edit/createmodule"
+                className="text-white btn btn-lg btn-dark"
+              >
+                Create New Module
+              </Link> */}
+              <div
+                onClick={this.handleShow}
+                className="text-white btn btn-lg btn-secondary"
+              >
+                Edit Exiting Module
+              </div>
+              <Modal show={this.state.show} onHide={this.handleClose}>
+                <Modal.Header>
+                  <Modal.Title style={{ margin: "0 auto" }} className="row">
+                    Exiting Module
+                  </Modal.Title>
+                </Modal.Header>
+                <Modal.Body className="text-center">
+                  {this.getExistingModules()}
+                </Modal.Body>
+                <Modal.Footer className="mx-auto" />
+              </Modal>
+            </div>
+            <div className="col-md" />
+          </div>
+          <hr id="editingcanvas" className="my-5" style={{ width: "80%" }} />
+        </Container>
+        <Footer />
+      </React.Fragment>
+    );
+  }
+}
+export default EditPage;

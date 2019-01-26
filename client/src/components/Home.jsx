@@ -49,8 +49,6 @@ class Home extends Component {
           <h2 className="text-center mt-5 pt-5">What you will learn</h2>
           <div className="container">
             <div className="row">
-              {/* <!-- <div className="col-1 "></div> -->
-        <!-- <div className="col-lg-5"> --> */}
               <div className="py-5 my-5">
                 <p className="m-3">
                   The following tutorial aims at familiarizing students with how
@@ -127,6 +125,7 @@ class Home extends Component {
       </React.Fragment>
     ));
   }
+
   getBadgeClasses(module) {
     let classes = "h3 text-center input-group my-5 text-";
     classes += module.isActive === true ? "light" : "secondary";

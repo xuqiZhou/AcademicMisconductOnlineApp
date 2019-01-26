@@ -4,24 +4,32 @@ const express = require("express"),
   sessions = require("express-session"),
   mongoose = require("mongoose");
 const seedDB = require("./models/seed"),
-  User = require("./models/user"),
   Question = require("./models/question"),
-  credentials = require("./credentials");
+  User = require("./models/user"),
+  credentials = require("./credentials"),
+  db = require("./config/keys").mongoURI;
+// Routes
+const mainRoutes = require("./routes");
+const studentRoutes = require("./routes/students");
+const adminRoutes = require("./routes/admin");
+const edit = require("./routes/edit");
+
 const app = express();
 
 seedDB.seed(Question);
 
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use(cookieParser(credentials.cookieSecret));
 app.use(sessions());
 app.set("port", process.env.PORT || 5000);
 app.use(express.static(__dirname + "/public"));
 
-mongoose.connect(
-  "mongodb+srv://xuqiZhou:xuqiZhou@sandbox-nkbkb.mongodb.net/AMOA?retryWrites=true"
-);
-const db = mongoose.connection;
-db.on("error", console.error.bind(console, "connection error:"));
+mongoose
+  .connect(db)
+  .then(() => {
+    console.log("MongoDB Connected...");
+  })
+  .catch(err => console.log(err));
 
 app.use((req, res, next) => {
   res.locals.showTests =
@@ -29,25 +37,25 @@ app.use((req, res, next) => {
   next();
 });
 
-const mainRoutes = require("./routes");
-const studentRoutes = require("./routes/students");
-const adminRoutes = require("./routes/admin");
-
 app.use(mainRoutes); //using index.js as an entry point for all types of users (guest, student and admin)
 app.use("/student", studentRoutes); //using student.js to handle all pages that a student can access
 app.use("/admin", adminRoutes); //Same idea as student.js
-
+app.use("/admin/edit", edit);
 //start
 app.get("/question", function(req, res, next) {
-  Question.find((err, user) => {
+  Question.find((err, question) => {
     if (err) console.log(err);
     else {
-      console.log(user);
-      res.json(user);
+      // console.log(user);
+      res.json(question);
     }
   });
 });
 //finish
+
+// app.get('/', (req,res)=>{
+//   res.
+// })
 
 app.use(function(req, res) {
   res.status(404);

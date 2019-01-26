@@ -7,9 +7,12 @@ import Modal from "./Modal";
 class MyNavbar extends Component {
   state = {
     // Links
-    student: [{ name: "Home", href: "/" }],
-    admin: [{ name: "Edit", href: "/admin/edit" }, { name: "Home", href: "/" }],
-    guest: [{ name: "Home", href: "/" }]
+    student: [{ name: "Home", href: "/student/home" }],
+    admin: [
+      { name: "Edit", href: "/admin/edit" },
+      { name: "Home", href: "/admin/home" }
+    ],
+    guest: [{ name: "Home", href: "/home" }]
   };
   styles = {
     logo: { width: "8rem" }
@@ -44,7 +47,7 @@ class MyNavbar extends Component {
           <ul className="navbar-nav ml-auto">
             {this.getLinks(this.props.role)}
           </ul>
-          <Modal userStatus={this.props.userStatus} />
+          <Modal userStatus={this.props.role} />
         </nav>
       </React.Fragment>
     );
