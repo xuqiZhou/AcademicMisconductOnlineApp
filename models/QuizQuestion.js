@@ -1,10 +1,6 @@
 const mongoose = require("mongoose");
 
 const quizQuestionSchema = mongoose.Schema({
-  qId: {
-    type: Number,
-    require: true
-  },
   moduleId: {
     type: String,
     require: true
@@ -13,10 +9,10 @@ const quizQuestionSchema = mongoose.Schema({
     type: String,
     require: true
   },
-  correctId: {
-    type: Number,
-    require: true
-  },
+  //   correctId: {
+  //     type: Number,
+  //     require: true
+  //   },
   options: {
     type: Array,
     require: true

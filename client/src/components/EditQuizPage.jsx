@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import { Container, Button, Form, FormGroup, Label, Input } from "reactstrap";
+import axios from "axios";
+import QuizQuestions from "./QuizQuestions";
 import Navbar from "./MyNavbar";
 import Footer from "./Footer";
-import axios from "axios";
 
 class EditQuizPage extends Component {
   constructor() {
@@ -12,11 +13,27 @@ class EditQuizPage extends Component {
     this.addOption = this.addOption.bind(this);
     this.reduceOption = this.reduceOption.bind(this);
     this.state = {
-      questionPanelHide: false,
+      quizQuestions: [],
+      questionPanelHide: true,
       quizQuestion: "",
       options: [""]
     };
   }
+  componentDidMount() {
+    fetch(`/admin/edit/editmodule/quiz/${this.props._id}`)
+      .then(res => res.json())
+      .then(quizQuestions => {
+        this.setState({ quizQuestions });
+      });
+  }
+  //   getExistingQuestions() {
+  //     return this.state.quizQuestions.map(quizQuestion => (
+  //       <React.Fragment>
+  //         <div>{quizQuestion.question}</div>
+  //         <hr style={{ width: "80%" }} />
+  //       </React.Fragment>
+  //     ));
+  //   }
   showQuestionPanel() {
     this.setState({ questionPanelHide: false });
     console.log("Add Question...");
@@ -28,10 +45,17 @@ class EditQuizPage extends Component {
       question: this.state.quizQuestion,
       options: this.state.options
     };
-    axios
-      .post("/admin/edit/editmodule/quiz/:_id", newQuestion)
-      .then(res => console.log(res.data));
-    this.setState({ options: [""], quizQuestion: "", questionPanelHide: true });
+    axios.post("/admin/edit/editmodule/quiz/:_id", newQuestion).then(res => {
+      console.log(res.data);
+      let quizQuestions = this.state.quizQuestions;
+      quizQuestions.push(res.data);
+      this.setState({
+        options: [""],
+        quizQuestion: "",
+        questionPanelHide: true,
+        quizQuestions
+      });
+    });
   }
   addOption() {
     const options = this.state.options;
@@ -47,6 +71,9 @@ class EditQuizPage extends Component {
     return this.state.options.map((option, index) => (
       <React.Fragment key={index}>
         <Input
+          placeholder={
+            index === 0 ? "Please put the correct answer in this input bar" : ""
+          }
           className="my-2"
           onChange={e => {
             const options = this.state.options;
@@ -64,6 +91,10 @@ class EditQuizPage extends Component {
         <Navbar role={this.props.role} />
         <Container>
           <h2 className="text-center my-5 py-5">Hard Coded Module Name</h2>
+          {/* {this.getExistingQuestions()} */}
+          {this.state.quizQuestions.map((question, index) => (
+            <QuizQuestions key={question._id} question={question} />
+          ))}
           <Form hidden={this.state.questionPanelHide}>
             <FormGroup>
               <Label>Question</Label>

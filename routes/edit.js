@@ -3,6 +3,7 @@ const router = express.Router();
 const Module = require("../models/Module");
 const QuizQuestion = require("../models/QuizQuestion");
 
+// Get all modules
 router.get("/", (req, res) => {
   Module.find().then(modules => res.json(modules));
 });
@@ -17,14 +18,18 @@ router.get("/editmodule/:_id", (req, res) => {
 });
 
 // Get Quiz Questions with module id
-// router.get("/editmodule//quiz/:_id", (req, res) => {
-//   Module.findById(req.params._id, (err, module) => {
-//     if (err) console.log(`Error finding module: ${module} Error: ${module}`);
-//     else if (!module) res.json({ title: "", body: "" });
-//     else res.json(module);
-//   });
-// });
+router.get("/editmodule/quiz/:_id", (req, res) => {
+  QuizQuestion.find({ moduleId: req.params._id }, (err, quizQuestions) => {
+    if (err) console.log(`Error finding module: ${module} Error: ${module}`);
+    else if (!quizQuestions) res.json({ errMassage: "Module Not Exist" });
+    else {
+      console.log(quizQuestions);
+      res.json(quizQuestions);
+    }
+  });
+});
 
+//Post new Module
 router.post("/", (req, res) => {
   new Module({
     moduleCode: req.body.moduleCode,
@@ -35,7 +40,7 @@ router.post("/", (req, res) => {
     .save()
     .then(module => res.json(module));
 });
-
+//Post new Quiz Question
 router.post("/editmodule/quiz/:_id", (req, res) => {
   console.log(req.body);
   new QuizQuestion({
@@ -47,6 +52,7 @@ router.post("/editmodule/quiz/:_id", (req, res) => {
     .then(quizQuestion => res.json(quizQuestion));
 });
 
+//Update Existing Module
 router.post("/editmodule", (req, res) => {
   console.log(req.body._id);
   const updatedModule = {
@@ -70,10 +76,10 @@ router.post("/editmodule", (req, res) => {
   );
 });
 
-router.delete("/:id", (req, res) => {
-  Module.findById(req.params.id)
-    .then(module => module.remove().then(() => res.json({ success: true })))
-    .catch(err => res.status(404).json({ success: false }));
-});
+// router.delete("/:id", (req, res) => {
+//   Module.findById(req.params.id)
+//     .then(module => module.remove().then(() => res.json({ success: true })))
+//     .catch(err => res.status(404).json({ success: false }));
+// });
 
 module.exports = router;
