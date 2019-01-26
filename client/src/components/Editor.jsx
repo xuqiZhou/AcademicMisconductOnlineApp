@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { Button } from "reactstrap";
-import { Link } from "react-router-dom";
+import { Button, Input, FormGroup, Label } from "reactstrap";
+import { Link, Redirect } from "react-router-dom";
 import ReactQuill from "react-quill";
 import renderHTML from "react-render-html";
 import "react-quill/dist/quill.snow.css";
@@ -10,22 +10,30 @@ class Editor extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      moduleCode: "",
       moduleId: "",
       title: "",
-      body: ""
+      body: "",
+      disBtn: false,
+      redirect: false
     };
     //bind
     this.onChange = this.onChange.bind(this);
-    this.moveOnToQuiz = this.moveOnToQuiz.bind(this);
+    this.setRedirect = this.setRedirect.bind(this);
     this.onSave = this.onSave.bind(this);
   }
 
   componentDidMount() {
-    fetch(`/admin/edit/editmodule/${this.props.moduleName}`)
+    fetch(`/admin/edit/editmodule/${this.props._id}`)
       .then(res => res.json())
       .then(module =>
         this.setState(
-          { moduleId: module._id, title: module.title, body: module.body },
+          {
+            moduleId: module._id,
+            moduleCode: module.moduleCode,
+            title: module.title,
+            body: module.body
+          },
           () => {
             console.log(this.state);
           }
@@ -40,44 +48,89 @@ class Editor extends Component {
 
   onSave(e) {
     e.preventDefault();
-    const newContent = {
+    const newModule = {
+      _id: this.props._id,
+      moduleCode: this.state.moduleCode,
       title: this.state.title,
       body: this.state.body,
       public: false
     };
-    axios.post("/admin/edit", newContent).then(res => console.log(res.data));
+    axios
+      .post("/admin/edit/editmodule", newModule)
+      .then(res => console.log(res.data));
+    this.setState({ disBtn: true });
   }
 
-  moveOnToQuiz(e) {
-    // e.preventDefault();
-    const newContent = {
-      title: this.state.title,
-      body: this.state.body,
-      published: false
-    };
-    axios.post("/admin/edit", newContent).then(res => console.log(res.data));
+  // onContinue(e) {
+  //   // e.preventDefault();
+  //   const newModule = {
+  //     title: this.state.title,
+  //     body: this.state.body,
+  //     published: false
+  //   };
+  //   axios
+  //     .post("/admin/edit/editmodule", newModule)
+  //     .then(res => console.log(res.data));
+  //   this.setState({
+  //     title: "",
+  //     body: ""
+  //   });
+  // }
 
+  setRedirect() {
     this.setState({
-      title: "",
-      body: ""
+      redirect: true
     });
   }
+
+  renderRedirect = () => {
+    if (this.state.redirect) {
+      return (
+        <Redirect to={`/admin/edit/editmodule/quiz/${this.state.moduleId}`} />
+      );
+    }
+  };
 
   render() {
     return (
       <div className="container my-5">
+        {this.renderRedirect()}
         <form>
           <div className="form-group">
-            <input
-              value={this.state.title}
-              className="form-control"
-              type="text"
-              name="title"
-              placeholder={this.state.title === "" ? "Title" : this.state.title}
-              onChange={e => {
-                this.setState({ title: e.target.value });
-              }}
-            />
+            <FormGroup>
+              <Label className="mx-3" for="exampleEmail">
+                Module Code
+              </Label>
+              <Input
+                value={this.state.moduleCode}
+                className="form-control"
+                type="text"
+                name="moduleCode"
+                placeholder={
+                  this.state.title === "" ? "Module Code" : this.state.title
+                }
+                onChange={e => {
+                  this.setState({ moduleCode: e.target.value });
+                }}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label className="mx-3" for="exampleEmail">
+                Title
+              </Label>
+              <Input
+                value={this.state.title}
+                className="form-control"
+                type="text"
+                name="title"
+                placeholder={
+                  this.state.title === "" ? "Title" : this.state.title
+                }
+                onChange={e => {
+                  this.setState({ title: e.target.value });
+                }}
+              />
+            </FormGroup>
           </div>
           <div className="form-group">
             <ReactQuill
@@ -96,16 +149,25 @@ class Editor extends Component {
           <div className="row pb-5">
             <div className="col" />
             <div className="btn-group" role="group" aria-label="...">
-              <Button color="danger" size="lg" onClick={this.onSave}>
+              <Button
+                className="text-white"
+                disabled={this.state.disBtn}
+                color={this.state.disBtn ? "dark" : "danger"}
+                size="lg"
+                onClick={this.onSave}
+              >
                 Save
               </Button>
-              <Link
-                to={`/admin/edit/handlesubmit/${this.state.moduleId}`}
+              <Button
+                className="text-white"
+                disabled={!this.state.disBtn}
+                // to={`/admin/edit/handlesubmit/${this.state.moduleId}`}
+                color={!this.state.disBtn ? "dark" : "danger"}
                 className="text-white btn btn-lg btn-dark"
-                onClick={this.moveOnToQuiz}
+                onClick={this.setRedirect}
               >
                 Continue
-              </Link>
+              </Button>
             </div>
             <div className="col" />
           </div>

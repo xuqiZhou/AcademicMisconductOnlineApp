@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
 const moduleSchema = mongoose.Schema({
+  moduleCode: {
+    type: String,
+    require: true
+  },
   title: {
     type: String,
     require: true

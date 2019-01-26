@@ -1,39 +1,31 @@
-/* jshint ignore: start */
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
-import {
-  Container,
-  ButtonDropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle
-} from "reactstrap";
+import { Link, Redirect } from "react-router-dom";
+import { Container, Form, FormGroup, Col, Button, Input } from "reactstrap";
 import { Modal } from "react-bootstrap";
-
-// Data
-// import Questions from "../data/questions.json";
-
+import axios from "axios";
 import Navbar from "./MyNavbar";
 import Footer from "./Footer";
 
 class EditPage extends Component {
   constructor() {
     super();
+    this.handleShowCreate = this.handleShowCreate.bind(this);
     this.handleShow = this.handleShow.bind(this);
+    this.handleCloseCreate = this.handleCloseCreate.bind(this);
     this.handleClose = this.handleClose.bind(this);
+    this.setRedirect = this.setRedirect.bind(this);
     this.state = {
       exitingModules: [],
-      show: false
+      show: false,
+      showCreate: false,
+      newModuleCode: "",
+      redirect: false,
+      newModuleId: "",
+      disBtn: true
     };
   }
 
-  handleClose() {
-    this.setState({ show: false });
-  }
-  handleShow() {
-    this.setState({ show: true });
-  }
-
+  //   Get all existing modules and display inside the modal
   componentDidMount() {
     fetch("/admin/edit")
       .then(res => res.json())
@@ -44,9 +36,55 @@ class EditPage extends Component {
       );
   }
 
+  // handle close and open for btn 'edit exiting module'
+  handleClose() {
+    this.setState({ show: false });
+  }
+
+  handleShow() {
+    this.setState({ show: true });
+  }
+
+  // handle close and open for btn 'Create new moudle'
+  handleCloseCreate() {
+    this.setState({ showCreate: false });
+  }
+
+  handleShowCreate() {
+    this.setState({ showCreate: true });
+  }
+
+  // Create Brand New Module
+  clickCreate = () => {
+    const newModule = {
+      moduleCode: this.state.newModuleCode,
+      title: "",
+      body: "",
+      public: false
+    };
+    axios.post("/admin/edit", newModule).then(res => {
+      this.setState({ newModuleId: res.data._id, disBtn: false });
+      console.log(this.state);
+    });
+  };
+
+  setRedirect() {
+    this.setState({
+      redirect: true
+    });
+  }
+
+  renderRedirect = () => {
+    if (this.state.redirect) {
+      return (
+        <Redirect to={`/admin/edit/editmodule/${this.state.newModuleId}`} />
+      );
+    }
+  };
+
   getExistingModules() {
     return this.state.exitingModules.map(module => (
-      <React.Fragment key={module.title}>
+      <React.Fragment key={module._id}>
         <div className="text-white m-5 bg-dark" style={{ height: "100px" }}>
           <Link
             style={{
@@ -59,7 +97,7 @@ class EditPage extends Component {
               transition: "0.5s ease",
               backfaceVisibility: "hidden"
             }}
-            to={`/admin/edit/editmodule/${module.title}`}
+            to={`/admin/edit/editmodule/${module._id}`}
           >
             {module.title}
           </Link>
@@ -72,12 +110,12 @@ class EditPage extends Component {
   render() {
     return (
       <React.Fragment>
+        {this.renderRedirect()}
         <Navbar role={this.props.role} page="quiz" />
         <Container>
           <h2 className="text-center mt-5 pt-5">What you can do</h2>
           <div className="row">
             <div className="col" />
-            {/* <div className="col-9"> */}
             <p className="pb-5 m-5">
               Lorem ipsum dolor sit amet consectetur adipisicing elit.
               Repudiandae nulla nisi illo facere corrupti perferendis
@@ -129,36 +167,74 @@ class EditPage extends Component {
               officia repudiandae quam eligendi odit minus, recusandae cumque
               aliquam doloribus beatae. Iste, nemo cumque!
             </p>
-            {/* </div> */}
             <div className="col" />
           </div>
           <div className="row pb-5">
             <div className="col-md" />
             <div className="btn-group" role="group" aria-label="...">
-              <ButtonDropdown isOpen={isOpen} toggle={toggle}>
-                <DropdownToggle caret color="primary">
-                  Text
-                </DropdownToggle>
-                <DropdownMenu>
-                  <DropdownItem header>Header</DropdownItem>
-                  <DropdownItem disabled>Action</DropdownItem>
-                  <DropdownItem>Another Action</DropdownItem>
-                  <DropdownItem divider />
-                  <DropdownItem>Another Action</DropdownItem>
-                </DropdownMenu>
-              </ButtonDropdown>
-              {/* <Link
-                to="/admin/edit/createmodule"
+              <div
+                onClick={this.handleShowCreate}
+                // to="/admin/edit/createmodule"
                 className="text-white btn btn-lg btn-dark"
               >
                 Create New Module
-              </Link> */}
+              </div>
               <div
                 onClick={this.handleShow}
                 className="text-white btn btn-lg btn-secondary"
               >
                 Edit Exiting Module
               </div>
+
+              {/* make new module */}
+              <Modal
+                show={this.state.showCreate}
+                onHide={this.handleCloseCreate}
+              >
+                <Modal.Header>
+                  <Modal.Title style={{ margin: "0 auto" }} className="row">
+                    Create New Module
+                  </Modal.Title>
+                </Modal.Header>
+                <Modal.Body className="text-center">
+                  <Form>
+                    <FormGroup row>
+                      <Col sm={7}>
+                        <Input
+                          onChange={e => {
+                            this.setState({ newModuleCode: e.target.value });
+                          }}
+                          placeholder="Enter Unique Module Code"
+                        />
+                      </Col>
+                      <Col sm={{ size: 5 }}>
+                        <div
+                          className="btn-group"
+                          role="group"
+                          aria-label="..."
+                        >
+                          <Button
+                            color={this.state.disBtn ? "danger" : "secondary"}
+                            disabled={!this.state.disBtn}
+                            onClick={this.clickCreate}
+                          >
+                            Create
+                          </Button>
+                          <Button
+                            color={!this.state.disBtn ? "danger" : "secondary"}
+                            disabled={this.state.disBtn}
+                            onClick={this.setRedirect}
+                          >
+                            Go Edit
+                          </Button>
+                        </div>
+                      </Col>
+                    </FormGroup>
+                  </Form>
+                </Modal.Body>
+              </Modal>
+
+              {/* Edit Existing Module */}
               <Modal show={this.state.show} onHide={this.handleClose}>
                 <Modal.Header>
                   <Modal.Title style={{ margin: "0 auto" }} className="row">
