@@ -1,6 +1,6 @@
 // /* jshint ignore:start */
 import React, { Component } from "react";
-import { BrowserRouter as Router, Redirect } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom";
 
 import Route from "react-router-dom/Route";
 // App Components
@@ -89,10 +89,6 @@ class App extends Component {
             path="/admin/edit"
             render={({ match }) => <EditPage role="admin" />}
           />
-          {/* <Route
-            path="/admin/edit/createmodule"
-            render={({ match }) => <CreateModule role="admin" />}
-          /> */}
           <Route
             exact
             path="/admin/edit/editmodule/:_id"
@@ -106,22 +102,6 @@ class App extends Component {
               <EditQuiz role="admin" _id={match.params._id} />
             )}
           />
-          {/* <Route
-            esact
-            strict
-            path="/admin/edit/handlesubmit/:moduleId"
-            render={({ match }) => (
-              <Redirect to={`/admin/home/${match.params.moduleID}`} />
-            )}
-          />
-          <Route
-            esact
-            strict
-            path="/admin/edit/handlesubmit/:moduleId"
-            render={({ match }) => (
-              <Redirect to={`/admin/home/${match.params.moduleID}`} />
-            )}
-          /> */}
         </div>
       </Router>
     );

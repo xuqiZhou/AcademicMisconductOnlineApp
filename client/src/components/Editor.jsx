@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Button, Input, FormGroup, Label } from "reactstrap";
-import { Link, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import ReactQuill from "react-quill";
 import renderHTML from "react-render-html";
 import "react-quill/dist/quill.snow.css";
@@ -17,7 +17,6 @@ class Editor extends Component {
       disBtn: false,
       redirect: false
     };
-    //bind
     this.onChange = this.onChange.bind(this);
     this.setRedirect = this.setRedirect.bind(this);
     this.onSave = this.onSave.bind(this);
@@ -60,22 +59,6 @@ class Editor extends Component {
       .then(res => console.log(res.data));
     this.setState({ disBtn: true });
   }
-
-  // onContinue(e) {
-  //   // e.preventDefault();
-  //   const newModule = {
-  //     title: this.state.title,
-  //     body: this.state.body,
-  //     published: false
-  //   };
-  //   axios
-  //     .post("/admin/edit/editmodule", newModule)
-  //     .then(res => console.log(res.data));
-  //   this.setState({
-  //     title: "",
-  //     body: ""
-  //   });
-  // }
 
   setRedirect() {
     this.setState({
@@ -160,10 +143,9 @@ class Editor extends Component {
               </Button>
               <Button
                 className="text-white"
+                size="lg"
                 disabled={!this.state.disBtn}
-                // to={`/admin/edit/handlesubmit/${this.state.moduleId}`}
                 color={!this.state.disBtn ? "dark" : "danger"}
-                className="text-white btn btn-lg btn-dark"
                 onClick={this.setRedirect}
               >
                 Continue

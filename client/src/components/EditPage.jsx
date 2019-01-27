@@ -174,7 +174,6 @@ class EditPage extends Component {
             <div className="btn-group" role="group" aria-label="...">
               <div
                 onClick={this.handleShowCreate}
-                // to="/admin/edit/createmodule"
                 className="text-white btn btn-lg btn-dark"
               >
                 Create New Module

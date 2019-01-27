@@ -1,77 +1,80 @@
 import React, { Component } from "react";
-import { Container, Button, Form, FormGroup, Label, Input } from "reactstrap";
+import { Button, Container, Form, FormGroup, Label, Input } from "reactstrap";
 import axios from "axios";
-import QuizQuestions from "./QuizQuestion";
-import Navbar from "./MyNavbar";
-import Footer from "./Footer";
 
-class EditQuizPage extends Component {
+class QuizQuestions extends Component {
   constructor() {
     super();
+    this.deleteQuestion = this.deleteQuestion.bind(this);
     this.hideQuestionPanel = this.hideQuestionPanel.bind(this);
-    this.showQuestionPanel = this.showQuestionPanel.bind(this);
-    this.addQuestion = this.addQuestion.bind(this);
+    this.editQuestion = this.editQuestion.bind(this);
+    this.saveQuestion = this.saveQuestion.bind(this);
     this.addOption = this.addOption.bind(this);
     this.reduceOption = this.reduceOption.bind(this);
-    this.refreshPage = this.refreshPage.bind(this);
+
     this.state = {
-      quizQuestions: [],
       questionPanelHide: true,
-      quizQuestion: "",
-      options: ["", ""],
-      moduleName: ""
+      question: "",
+      options: ["", ""]
     };
   }
 
-  //Fetch module title, fetch quiz questions
-  componentDidMount() {
-    fetch(`/admin/edit/editmodule/quiz/${this.props._id}`)
+  componentDidMount(id) {
+    fetch(`/admin/edit/editmodule/quiz/question/${id}`)
       .then(res => res.json())
-      .then(quizQuestions => {
-        this.setState({ quizQuestions });
-      });
-    fetch(`/admin/edit/editmodule/${this.props._id}`)
-      .then(res => res.json())
-      .then(module => {
-        this.setState({ moduleName: module.title });
-      });
-  }
-
-  //refresh mechanism
-  refreshPage() {
-    this.componentDidMount();
-  }
-
-  showQuestionPanel() {
-    this.setState({ questionPanelHide: false });
+      .then(q =>
+        this.setState({ question: q.question, options: q.options }, () => {
+          console.log(this.state);
+        })
+      );
   }
 
   hideQuestionPanel() {
     this.setState({ questionPanelHide: true });
   }
-  addQuestion(e) {
+
+  editQuestion(e) {
+    const id = e.target.value;
+    this.setState({ questionPanelHide: false });
+    this.componentDidMount(id);
+    console.log("Editing... " + id);
+  }
+
+  deleteQuestion() {
+    console.log(this.props.question._id);
+    axios
+      .delete(`/admin/edit/editmodule/quiz/delete/${this.props.question._id}`)
+      .then(res => {
+        console.log(res.data);
+      });
+    this.props.refreshPage();
+  }
+
+  saveQuestion(e) {
     e.preventDefault();
-    const newQuestion = {
-      moduleId: this.props._id,
-      question: this.state.quizQuestion,
+    const updatedQuestion = {
+      _id: this.props._id,
+      question: this.state.question,
       options: this.state.options
     };
-    axios.post("/admin/edit/editmodule/quiz/:_id", newQuestion).then(res => {
-      let quizQuestions = this.state.quizQuestions;
-      quizQuestions.push(res.data);
-      this.setState({
-        options: ["", ""],
-        quizQuestion: "",
-        questionPanelHide: true,
-        quizQuestions
+    axios
+      .post("/admin/edit/editmodule/editquiz/:_id", updatedQuestion)
+      .then(res => {
+        this.setState({
+          questionPanelHide: true,
+          question: "",
+          options: ["", ""]
+        });
       });
-    });
+    this.props.refreshPage();
   }
+
   addOption() {
     const options = this.state.options;
     options.push("");
     this.setState(options);
   }
+
   reduceOption() {
     const options = this.state.options;
     if (options.length >= 3) {
@@ -81,10 +84,12 @@ class EditQuizPage extends Component {
       alert("Each question must have at least TWO options");
     }
   }
+
   getOptionInputs() {
     return this.state.options.map((option, index) => (
       <React.Fragment key={index}>
         <Input
+          value={option}
           placeholder={
             index === 0 ? "Please put the correct answer in this input bar" : ""
           }
@@ -93,6 +98,7 @@ class EditQuizPage extends Component {
             const options = this.state.options;
             options[index] = e.target.value;
             this.setState({ options });
+            console.log(this.state.options);
           }}
         />
       </React.Fragment>
@@ -100,28 +106,52 @@ class EditQuizPage extends Component {
   }
 
   render() {
+    const q = this.props.question;
     return (
       <React.Fragment>
-        <Navbar role={this.props.role} />
-        <Container>
-          <h2 className="text-center my-5 py-5">{this.state.moduleName}</h2>
-          {this.state.quizQuestions.map((question, index) => (
-            <QuizQuestions
-              _id={question._id}
-              refreshPage={this.refreshPage}
-              key={question._id}
-              question={question}
-            />
-          ))}
+        <Container className="bg-light">
+          <div className="card-body m-md-2 m-lg-4">
+            <p className="mx-5">{q.question}</p>
+            <div className="mx-5">
+              <ol className="mx-3">
+                {q.options.map((option, index) => (
+                  <li key={index}>{option}</li>
+                ))}
+              </ol>
+            </div>
+            <div className="my-3  text-right">
+              {/* ?Edit Delete Button Group */}
+              <div className="btn-group" role="group" aria-label="...">
+                <Button
+                  color="dark"
+                  className="text-white"
+                  value={q._id}
+                  onClick={this.editQuestion}
+                >
+                  Edit
+                </Button>
+                <Button
+                  color="danger"
+                  className="text-white"
+                  onClick={this.deleteQuestion}
+                >
+                  Delete
+                </Button>
+              </div>
+            </div>
+          </div>
           <Form hidden={this.state.questionPanelHide}>
+            {/* question */}
             <FormGroup>
               <Label>Question</Label>
               <Input
+                value={this.state.question}
                 style={{ minHeight: "100px" }}
                 type="textarea"
                 name="text"
                 onChange={e => {
-                  this.setState({ quizQuestion: e.target.value });
+                  this.setState({ question: e.target.value });
+                  console.log(this.state.question);
                 }}
               />
             </FormGroup>
@@ -159,31 +189,20 @@ class EditQuizPage extends Component {
                 <Button
                   color="danger"
                   size="lg"
-                  onClick={this.addQuestion}
+                  onClick={this.saveQuestion}
                   className="text-white"
                 >
-                  ADD
+                  SAVE
                 </Button>
               </div>
               <div className="col-md" />
             </div>
           </Form>
-          <div hidden={!this.state.questionPanelHide} className="row py-5">
-            <div className="col-md" />
-            <Button
-              size="lg"
-              onClick={this.showQuestionPanel}
-              className="text-white"
-            >
-              ADD QUESTION
-            </Button>
-            <div className="col-md" />
-          </div>
+          <hr style={{ borderColor: "#868e96", width: "90%" }} />
         </Container>
-        <Footer />
       </React.Fragment>
     );
   }
 }
 
-export default EditQuizPage;
+export default QuizQuestions;

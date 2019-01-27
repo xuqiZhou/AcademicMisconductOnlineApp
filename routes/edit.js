@@ -23,9 +23,18 @@ router.get("/editmodule/quiz/:_id", (req, res) => {
     if (err) console.log(`Error finding module: ${module} Error: ${module}`);
     else if (!quizQuestions) res.json({ errMassage: "Module Not Exist" });
     else {
-      console.log(quizQuestions);
       res.json(quizQuestions);
     }
+  });
+});
+
+// Get Quiz Questions with question id
+router.get("/editmodule/quiz/question/:_id", (req, res) => {
+  QuizQuestion.findById(req.params._id, (err, question) => {
+    if (err)
+      console.log(`Error finding question: ${question} Error: ${question}`);
+    else if (!question) res.json({ errMassage: "Question not found" });
+    else res.json(question);
   });
 });
 
@@ -40,9 +49,9 @@ router.post("/", (req, res) => {
     .save()
     .then(module => res.json(module));
 });
+
 //Post new Quiz Question
 router.post("/editmodule/quiz/:_id", (req, res) => {
-  console.log(req.body);
   new QuizQuestion({
     moduleId: req.body.moduleId,
     question: req.body.question,
@@ -76,10 +85,30 @@ router.post("/editmodule", (req, res) => {
   );
 });
 
-// router.delete("/:id", (req, res) => {
-//   Module.findById(req.params.id)
-//     .then(module => module.remove().then(() => res.json({ success: true })))
-//     .catch(err => res.status(404).json({ success: false }));
-// });
+//Update Existing Quiz Question
+router.post("/editmodule/editquiz/:_id", (req, res) => {
+  console.log(req.body._id);
+  const updatedQuestion = {
+    question: req.body.question,
+    options: req.body.options
+  };
+  console.log(updatedQuestion);
+  QuizQuestion.findOneAndUpdate(
+    { _id: req.body._id },
+    updatedQuestion,
+    (err, question) => {
+      if (err)
+        console.log(`Error finding question: ${question} Error: ${question}`);
+      else res.json(question);
+    }
+  );
+});
+
+//Handle delete quiz questions
+router.delete("/editmodule/quiz/delete/:id", (req, res) => {
+  QuizQuestion.findById(req.params.id)
+    .then(question => question.remove().then(() => res.json({ success: true })))
+    .catch(err => res.status(404).json({ success: false }));
+});
 
 module.exports = router;
