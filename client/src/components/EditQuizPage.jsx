@@ -49,6 +49,7 @@ class EditQuizPage extends Component {
   hideQuestionPanel() {
     this.setState({ questionPanelHide: true });
   }
+
   addQuestion(e) {
     e.preventDefault();
     const newQuestion = {
@@ -144,7 +145,6 @@ class EditQuizPage extends Component {
               </div>
             </div>
             {this.getOptionInputs()}
-
             <div className="row py-5">
               <div className="col-md" />
               <div className="btn-group" role="group" aria-label="...">

@@ -9,6 +9,8 @@ import {
   FormControl
 } from "react-bootstrap";
 import { Button } from "reactstrap";
+import uuid from "uuid";
+
 function FieldGroup({ id, label, help, ...props }) {
   return (
     <FormGroup controlId={id}>
@@ -52,7 +54,9 @@ class MyModal extends Component {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body className="text-center">
-            {this.getModal(this.props.userStatus).body}
+            {this.getModal(this.props.userStatus).body.map(link => (
+              <React.Fragment key={uuid()}>{link}</React.Fragment>
+            ))}
           </Modal.Body>
           <Modal.Footer className="mx-auto">
             {this.getModal(this.props.userStatus).footer}
@@ -67,21 +71,22 @@ class MyModal extends Component {
       return {
         type: "Admin Settings",
         title: "Settings",
-        body: "List of Settings",
+        // body: null,
+        body: [<Link to="/admin/studentscore">Student Score</Link>],
         footer: null
       };
     } else if (loginStatus.toUpperCase() === "STUDENT") {
       return {
         type: "Studetns",
         title: "Student Settings",
-        body: "More Settings",
+        body: ["More Settings"],
         footer: null
       };
     } else {
       return {
         type: "Login",
         title: "AMOA Login",
-        body: (
+        body: [
           <React.Fragment>
             <form className="text-left mb-4">
               <FieldGroup
@@ -102,7 +107,7 @@ class MyModal extends Component {
               </Button>
             </form>
           </React.Fragment>
-        ),
+        ],
         footer: (
           <React.Fragment>
             <Link to="createaccount">Register</Link> -

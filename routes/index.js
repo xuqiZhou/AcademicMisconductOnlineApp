@@ -1,25 +1,61 @@
 const express = require("express"),
-    router = express.Router(),
-    urlencodedParser = require("body-parser").urlencoded({ extended: false }),
-    cookieParser = require("cookie-parser"),
-    bodyParser = require("body-parser"),
-    session = require("express-session"),
-    credentials = require("../credentials"),
-    mongoose = require("mongoose");
-const User = require("../models/user");
+  router = express.Router(),
+  urlencodedParser = require("body-parser").urlencoded({ extended: false }),
+  cookieParser = require("cookie-parser"),
+  bodyParser = require("body-parser"),
+  session = require("express-session"),
+  credentials = require("../credentials"),
+  mongoose = require("mongoose");
+const User = require("../models/user"),
+  QuizQuestion = require("../models/QuizQuestion"),
+  Module = require("../models/Module");
 
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(cookieParser(credentials.cookieSecret));
 router.use(session());
 
-// router.use((req, res, next) => {
-//   if (!res.locals.partials) res.locals.partials = {};
-//   res.locals.partials.menuBar = menu.admin;
-//   next();
-// });
+router.get("/home", (req, res) => {
+  Module.find().then(modules => res.json(modules));
+});
 
-router.get("/", (req, res) => {
-    res.end("home");
+router.get("/module/:moduleCode", (req, res) => {
+  Module.findOne({ moduleCode: req.params.moduleCode }, (err, module) => {
+    if (err) console.log(`Error finding module: ${module} Error: ${module}`);
+    else if (!module) res.json({ errMessage: "Module d exist" });
+    else res.json(module);
+  });
+});
+
+router.get("/module/quiz/:moduleId", (req, res) => {
+  QuizQuestion.find({ moduleId: req.params.moduleId }, (err, quizQuestions) => {
+    if (err) console.log(`Error finding module: ${module} Error: ${module}`);
+    else if (!quizQuestions) res.json({ errMassage: "Module Not Exist" });
+    else {
+      res.json(quizQuestions);
+    }
+  });
+});
+
+router.post("/handleregister", (req, res) => {
+  console.log(req.body.email);
+  console.log(req.body.password);
+  User.findOne({ email: req.body.email }, (err, user) => {
+    if (err) {
+      console.log("!jskfjkdsjfkdsjkjfdskajfkdsjkafjskfjdasklfj");
+      console.log(`Error finding user: ${user} Error: ${user}`);
+    } else if (!user) {
+      console.log("!user");
+      new User({
+        email: req.body.email,
+        password: req.body.password,
+        type: "Student"
+      })
+        .save()
+        .then(res.json({ success: true }));
+    } else {
+      res.json({ success: false, reason: "Email Taken" });
+    }
+  });
 });
 
 // router.post("/processlogin", function(req, res) {
@@ -35,7 +71,7 @@ router.get("/", (req, res) => {
 // });
 
 router.post("/processlogin", function(req, res) {
-    console.log(req.body.userName);
+  console.log(req.body.userName);
 });
 
 module.exports = router;

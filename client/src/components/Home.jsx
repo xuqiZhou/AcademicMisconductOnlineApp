@@ -6,27 +6,40 @@ import Navbar from "./MyNavbar";
 import Footer from "./Footer";
 
 class Home extends Component {
-  state = {
-    modules: [
-      {
-        moduleName: "Introduction",
-        moduleHref: "module/introduction",
-        isActive: true
-      },
-      {
-        moduleName: "Plagiarism",
-        moduleHref: "module/plagiarism",
-        isActive: true
-      },
-      {
-        moduleName: "Cheating",
-        moduleHref: "module/cheating",
-        isActive: true
-      },
-      { moduleName: "More...", moduleHref: "", isActive: false }
-    ],
-    userStatus: "guest" //Get this info from back-end ('guest', 'admin', 'student')
-  };
+  constructor() {
+    super();
+    this.module = this.module.bind(this);
+    this.state = {
+      modules: [],
+      // modules: [
+      //   {
+      //     moduleName: "Introduction",
+      //     moduleHref: "module/introduction",
+      //     isActive: true
+      //   },
+      //   {
+      //     moduleName: "Plagiarism",
+      //     moduleHref: "module/plagiarism",
+      //     isActive: true
+      //   },
+      //   {
+      //     moduleName: "Cheating",
+      //     moduleHref: "module/cheating",
+      //     isActive: true
+      //   },
+      //   { moduleName: "More...", moduleHref: "", isActive: false }
+      // ],
+      userStatus: "guest" //Get this info from back-end ('guest', 'admin', 'student')
+    };
+  }
+
+  componentDidMount() {
+    fetch("/home")
+      .then(res => res.json())
+      .then(modules => {
+        this.setState({ modules });
+      });
+  }
 
   render() {
     return (
@@ -99,12 +112,12 @@ class Home extends Component {
 
   module() {
     return this.state.modules.map(module => (
-      <React.Fragment key={module.moduleName}>
+      <React.Fragment key={module.moduleCode}>
         <div className="text-center col-12 col-md-6 p-3">
           <div style={{ height: "13rem" }} className="text-center bg-dark py-3">
             <Link
               name="top"
-              to={module.moduleHref}
+              to={`module/${module.moduleCode}`}
               className={this.getBadgeClasses(module)}
               style={{
                 color: "inherit",
@@ -117,7 +130,7 @@ class Home extends Component {
                 backfaceVisibility: "hidden"
               }}
             >
-              {module.moduleName}
+              {module.moduleCode}
             </Link>
           </div>
         </div>
@@ -127,9 +140,10 @@ class Home extends Component {
   }
 
   getBadgeClasses(module) {
-    let classes = "h3 text-center input-group my-5 text-";
-    classes += module.isActive === true ? "light" : "secondary";
-    return classes;
+    // let classes = "h3 text-center input-group my-5 text-";
+    // classes += module.isActive === true ? "light" : "secondary";
+    // return classes;
+    return "h3 text-center input-group my-5 text-light";
   }
 }
 

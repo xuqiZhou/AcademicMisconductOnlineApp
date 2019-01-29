@@ -4,14 +4,17 @@ import { BrowserRouter as Router } from "react-router-dom";
 
 import Route from "react-router-dom/Route";
 // App Components
+import Register from "./components/Register";
+import EditQuiz from "./components/EditQuizPage";
 import Home from "./components/Home";
 import Module from "./components/Module";
 import QuizPage from "./components/QuizPage";
 import EditPage from "./components/EditPage";
 import CreateModule from "./components/CreateModule";
-import EditQuiz from "./components/EditQuizPage";
+import StudentScore from "./components/StudentScore";
 
 import "./App.css";
+import EntryPage from "./components/EntryPoint";
 
 class App extends Component {
   state = {
@@ -32,18 +35,20 @@ class App extends Component {
     return (
       <Router>
         <div>
+          <Route exact path="/" render={() => <EntryPage />} />
+          <Route exact path="/register" render={() => <Register />} />
           <Route exact path="/home" render={() => <Home role="guest" />} />
           <Route
             exact
             path="/module/:moduleName"
             render={({ match }) => (
-              <Module role="guest" moduleName={match.params.moduleName} />
+              <Module role="guest" moduleCode={match.params.moduleName} />
             )}
           />
           <Route
-            path="/module/:moduleName/quiz"
+            path="/module/:moduleCode/quiz"
             render={({ match }) => (
-              <QuizPage role="guest" moduleName={match.params.moduleName} />
+              <QuizPage role="guest" moduleCode={match.params.moduleCode} />
             )}
           />
           {/* student routes */}
@@ -56,13 +61,13 @@ class App extends Component {
             exact
             path="/student/module/:moduleName"
             render={({ match }) => (
-              <Module role="student" moduleName={match.params.moduleName} />
+              <Module role="student" moduleCode={match.params.moduleName} />
             )}
           />
           <Route
-            path="/student/module/:moduleName/quiz"
+            path="/student/module/:moduleCode/quiz"
             render={({ match }) => (
-              <QuizPage role="student" moduleName={match.params.moduleName} />
+              <QuizPage role="student" moduleCode={match.params.moduleCode} />
             )}
           />
           {/* admin routes */}
@@ -75,13 +80,13 @@ class App extends Component {
             exact
             path="/admin/module/:moduleName"
             render={({ match }) => (
-              <Module role="admin" moduleName={match.params.moduleName} />
+              <Module role="admin" moduleCode={match.params.moduleName} />
             )}
           />
           <Route
-            path="/admin/module/:moduleName/quiz"
+            path="/admin/module/:moduleCode/quiz"
             render={({ match }) => (
-              <QuizPage role="admin" moduleName={match.params.moduleName} />
+              <QuizPage role="admin" moduleCode={match.params.moduleCode} />
             )}
           />
           <Route
@@ -102,12 +107,16 @@ class App extends Component {
               <EditQuiz role="admin" _id={match.params._id} />
             )}
           />
+          <Route
+            exact
+            path="/admin/studentscore"
+            render={({ match }) => <StudentScore role="admin" />}
+          />
         </div>
       </Router>
     );
   }
 }
-
 // function loadModule({ match }) {
 //   return <Module moduleName={match.params.moduleName} />;
 // }
