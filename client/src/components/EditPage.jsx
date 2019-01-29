@@ -23,9 +23,10 @@ class EditPage extends Component {
     this.handleClose = this.handleClose.bind(this);
     this.setRedirect = this.setRedirect.bind(this);
     this.deleteModule = this.deleteModule.bind(this);
+    this.makePublic = this.makePublic.bind(this);
     this.state = {
-      exitingModules: [],
-      show: true,
+      existingModules: [],
+      show: false,
       showCreate: false,
       newModuleCode: "",
       redirect: false,
@@ -40,10 +41,15 @@ class EditPage extends Component {
   componentDidMount() {
     fetch("/admin/edit")
       .then(res => res.json())
-      .then(exitingModules => this.setState({ exitingModules }, () => {}));
+      .then(existingModules => this.setState({ existingModules }, () => {}));
   }
 
-  // handle close and open for btn 'edit exiting module'
+  componentDidUpdate() {
+    fetch("/admin/edit")
+      .then(res => res.json())
+      .then(existingModules => this.setState({ existingModules }, () => {}));
+  }
+  // handle close and open for btn 'edit existing module'
   handleClose() {
     this.setState({ show: false });
   }
@@ -61,13 +67,7 @@ class EditPage extends Component {
   deleteModule(e) {
     console.log(e.target.value);
     const moduleId = e.target.value;
-    axios.delete(`/admin/edit/delete/${moduleId}`).then(() =>
-      this.setState({
-        exitingModules: this.state.exitingModules.filter(
-          module => module._id !== moduleId
-        )
-      })
-    );
+    axios.delete(`/admin/edit/delete/${moduleId}`);
   }
 
   // Create Brand New Module
@@ -105,20 +105,25 @@ class EditPage extends Component {
     }
   };
 
-  updatePublicStatus(e) {
-    const module = { _id: e.target.value };
-    console.log(module);
+  makePublic(e) {
+    axios.post("/admin/edit/editmodule/updatestatus", {
+      _id: e.target.value,
+      public: true
+    });
+  }
 
-    axios
-      .post("/admin/edit/editmodule/updatestatus", module)
-      .then(res => console.log(res.data));
+  makePrivate(e) {
+    axios.post("/admin/edit/editmodule/updatestatus", {
+      _id: e.target.value,
+      public: false
+    });
   }
 
   getPublishedModules() {
     let target = [];
-    for (let prop in this.state.exitingModules) {
-      if (this.state.exitingModules.hasOwnProperty(prop)) {
-        target[prop] = this.state.exitingModules[prop];
+    for (let prop in this.state.existingModules) {
+      if (this.state.existingModules.hasOwnProperty(prop)) {
+        target[prop] = this.state.existingModules[prop];
       }
     }
     target = target.filter(module => module.public === true);
@@ -144,7 +149,7 @@ class EditPage extends Component {
               <Button
                 className="text-white btn-sm btn-dark"
                 value={module._id}
-                onClick={this.updatePublicStatus}
+                onClick={this.makePrivate}
               >
                 Hide
               </Button>
@@ -165,11 +170,11 @@ class EditPage extends Component {
     ));
   }
 
-  getExistingModules() {
+  getPrivateModules() {
     let target = [];
-    for (let prop in this.state.exitingModules) {
-      if (this.state.exitingModules.hasOwnProperty(prop)) {
-        target[prop] = this.state.exitingModules[prop];
+    for (let prop in this.state.existingModules) {
+      if (this.state.existingModules.hasOwnProperty(prop)) {
+        target[prop] = this.state.existingModules[prop];
       }
     }
     target = target.filter(module => module.public === false);
@@ -195,7 +200,7 @@ class EditPage extends Component {
               <Button
                 className="text-white btn-sm btn-dark"
                 value={module._id}
-                onClick={this.updatePublicStatus}
+                onClick={this.makePublic}
               >
                 Publish
               </Button>
@@ -291,7 +296,7 @@ class EditPage extends Component {
                 onClick={this.handleShow}
                 className="text-white btn btn-lg btn-secondary"
               >
-                Edit Exiting Module
+                Edit Existing Module
               </div>
 
               {/* make new module */}
@@ -352,18 +357,18 @@ class EditPage extends Component {
               <Modal show={this.state.show} onHide={this.handleClose}>
                 <Modal.Header>
                   <Modal.Title style={{ margin: "0 auto" }} className="row">
-                    Exiting Module
+                    Public Module
                   </Modal.Title>
                 </Modal.Header>
                 <Modal.Body className="text-center">
-                  {this.getExistingModules()}
+                  {this.getPublishedModules()}
                 </Modal.Body>
 
                 <Modal.Title style={{ margin: "0 auto" }} className="row">
-                  Published
+                  Not Yet Public
                 </Modal.Title>
                 <Modal.Body className="text-center">
-                  {this.getPublishedModules()}
+                  {this.getPrivateModules()}
                 </Modal.Body>
               </Modal>
             </div>

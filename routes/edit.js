@@ -75,10 +75,8 @@ router.post("/editmodule", (req, res) => {
     moduleCode: req.body.moduleCode,
     title: req.body.title,
     body: req.body.body,
-    public: req.body.public
-    // })
-    //   .save()
-    //   .then(module => res.json(module));
+    public: req.body.public,
+    lastModified: req.body.lastModified
   };
   console.log(updatedModule);
 
@@ -95,17 +93,14 @@ router.post("/editmodule", (req, res) => {
 // Change Module Status
 router.post("/editmodule/updatestatus", (req, res) => {
   console.log("MODULEID: " + req.body._id);
-  Module.findById(req.body._id, (err, module) => {
-    const newModule = {};
+  console.log(req.body.public);
+  const newStatus = {
+    public: req.body.public
+  };
+  Module.findOneAndUpdate({ _id: req.body._id }, newStatus, (err, module) => {
+    if (err) console.log(`Error finding module: ${module} Error: ${module}`);
+    else res.json({ updateSuccess: true });
   });
-  Module.findOneAndUpdate(
-    { _id: req.body._id },
-    updatedModule,
-    (err, module) => {
-      if (err) console.log(`Error finding module: ${module} Error: ${module}`);
-      else res.json(module);
-    }
-  );
 });
 
 // Update Existing Quiz Question

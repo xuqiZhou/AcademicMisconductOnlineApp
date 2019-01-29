@@ -42,10 +42,8 @@ router.post("/handleregister", (req, res) => {
   console.log(req.body.password);
   User.findOne({ email: req.body.email }, (err, user) => {
     if (err) {
-      console.log("!jskfjkdsjfkdsjkjfdskajfkdsjkafjskfjdasklfj");
       console.log(`Error finding user: ${user} Error: ${user}`);
     } else if (!user) {
-      console.log("!user");
       new User({
         email: req.body.email,
         password: req.body.password,

@@ -31,7 +31,10 @@ class Editor extends Component {
             moduleId: module._id,
             moduleCode: module.moduleCode,
             title: module.title,
-            body: module.body
+            body: module.body,
+            createdDate: module.createdDate,
+            lastModified: module.lastModified,
+            public: module.public
           },
           () => {
             console.log(this.state);
@@ -52,7 +55,8 @@ class Editor extends Component {
       moduleCode: this.state.moduleCode,
       title: this.state.title,
       body: this.state.body,
-      public: false
+      public: this.state.public,
+      lastModified: Date.now()
     };
     axios
       .post("/admin/edit/editmodule", newModule)
@@ -74,10 +78,22 @@ class Editor extends Component {
     }
   };
 
+  getDateTime(timestamp) {
+    const date = new Date(timestamp).toLocaleDateString();
+    const time = new Date(timestamp).toLocaleTimeString();
+    return `${date}   ${time}`;
+  }
+
   render() {
     return (
       <div className="container my-5">
         {this.renderRedirect()}
+        <div className="mx-3 mb-5 h5">{`Created Date: ${this.getDateTime(
+          this.state.createdDate
+        )}`}</div>
+        <div className="mx-3 mb-5 h5">{`Last Modified: ${this.getDateTime(
+          this.state.lastModified
+        )}`}</div>{" "}
         <form>
           <div className="form-group">
             <FormGroup>

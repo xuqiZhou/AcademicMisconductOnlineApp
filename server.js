@@ -5,7 +5,6 @@ const express = require("express"),
   mongoose = require("mongoose");
 const seedDB = require("./models/seed"),
   Question = require("./models/question"),
-  User = require("./models/user"),
   credentials = require("./credentials"),
   db = require("./config/keys").mongoURI;
 // Routes
@@ -41,21 +40,6 @@ app.use(mainRoutes); //using index.js as an entry point for all types of users (
 app.use("/student", studentRoutes); //using student.js to handle all pages that a student can access
 app.use("/admin", adminRoutes); //Same idea as student.js
 app.use("/admin/edit", edit);
-//start
-app.get("/question", function(req, res, next) {
-  Question.find((err, question) => {
-    if (err) console.log(err);
-    else {
-      // console.log(user);
-      res.json(question);
-    }
-  });
-});
-//finish
-
-// app.get('/', (req,res)=>{
-//   res.
-// })
 
 app.use(function(req, res) {
   res.status(404);

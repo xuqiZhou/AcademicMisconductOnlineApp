@@ -92,14 +92,21 @@ class Home extends Component {
   }
 
   module() {
-    return this.state.modules.map(module => (
+    let target = [];
+    for (let prop in this.state.modules) {
+      if (this.state.modules.hasOwnProperty(prop)) {
+        target[prop] = this.state.modules[prop];
+      }
+    }
+    target = target.filter(module => module.public === true);
+    return target.map(module => (
       <React.Fragment key={module.moduleCode}>
         <div className="text-center col-12 col-md-6 p-3">
           <div style={{ height: "13rem" }} className="text-center bg-dark py-3">
             <Link
               name="top"
               to={`module/${module.moduleCode}`}
-              className={this.getBadgeClasses(module)}
+              className="h3 text-center input-group my-5 text-light"
               style={{
                 color: "inherit",
                 textDecoration: "none",
@@ -118,13 +125,6 @@ class Home extends Component {
         <hr className="d-block d-sm-none" style={{ width: "80%" }} />
       </React.Fragment>
     ));
-  }
-
-  getBadgeClasses(module) {
-    // let classes = "h3 text-center input-group my-5 text-";
-    // classes += module.isActive === true ? "light" : "secondary";
-    // return classes;
-    return "h3 text-center input-group my-5 text-light";
   }
 }
 
