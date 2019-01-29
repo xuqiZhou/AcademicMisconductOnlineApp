@@ -38,7 +38,7 @@ router.get("/editmodule/quiz/question/:_id", (req, res) => {
   });
 });
 
-//Post new Module
+// Post new Module
 router.post("/", (req, res) => {
   Module.findOne({ moduleCode: req.body.moduleCode }, (err, module) => {
     if (err) console.log(`Error finding module: ${module} Error: ${module}`);
@@ -57,7 +57,7 @@ router.post("/", (req, res) => {
   });
 });
 
-//Post new Quiz Question
+// Post new Quiz Question
 router.post("/editmodule/quiz/:_id", (req, res) => {
   new QuizQuestion({
     moduleId: req.body.moduleId,
@@ -68,7 +68,7 @@ router.post("/editmodule/quiz/:_id", (req, res) => {
     .then(quizQuestion => res.json(quizQuestion));
 });
 
-//Update Existing Module
+// Update Existing Module
 router.post("/editmodule", (req, res) => {
   console.log(req.body._id);
   const updatedModule = {
@@ -95,28 +95,20 @@ router.post("/editmodule", (req, res) => {
 // Change Module Status
 router.post("/editmodule/updatestatus", (req, res) => {
   console.log("MODULEID: " + req.body._id);
-  // const updatedModule = {
-  //   moduleCode: req.body.moduleCode,
-  //   title: req.body.title,
-  //   body: req.body.body,
-  //   public: req.body.public
-  //   // })
-  //   //   .save()
-  //   //   .then(module => res.json(module));
-  // };
-  // console.log(updatedModule);
-
-  // Module.findOneAndUpdate(
-  //   { _id: req.body._id },
-  //   updatedModule,
-  //   (err, module) => {
-  //     if (err) console.log(`Error finding module: ${module} Error: ${module}`);
-  //     else res.json(module);
-  //   }
-  // );
+  Module.findById(req.body._id, (err, module) => {
+    const newModule = {};
+  });
+  Module.findOneAndUpdate(
+    { _id: req.body._id },
+    updatedModule,
+    (err, module) => {
+      if (err) console.log(`Error finding module: ${module} Error: ${module}`);
+      else res.json(module);
+    }
+  );
 });
 
-//Update Existing Quiz Question
+// Update Existing Quiz Question
 router.post("/editmodule/editquiz/:_id", (req, res) => {
   console.log(req.body._id);
   const updatedQuestion = {
@@ -135,14 +127,14 @@ router.post("/editmodule/editquiz/:_id", (req, res) => {
   );
 });
 
-//Handle delete module with id
+// Handle delete module with id
 router.delete("/delete/:id", (req, res) => {
   Module.findById(req.params.id)
     .then(module => module.remove().then(() => res.json({ success: true })))
     .catch(err => res.status(404).json({ success: false }));
 });
 
-//Handle delete quiz questions
+// Handle delete quiz questions
 router.delete("/editmodule/quiz/delete/:id", (req, res) => {
   QuizQuestion.findById(req.params.id)
     .then(question => question.remove().then(() => res.json({ success: true })))
