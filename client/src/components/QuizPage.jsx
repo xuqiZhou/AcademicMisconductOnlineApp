@@ -35,7 +35,6 @@ class QuizPage extends Component {
   fetchQuestion() {
     if (this.state.moduleFetched && this.state.questionNotFetched) {
       console.log(`fetchquestion ${this.state.moduleId}`);
-
       axios.get(`/module/quiz/${this.state.moduleId}`).then(res => {
         const questions = res.data;
         this.setState({ questions: questions, questionNotFetched: false });

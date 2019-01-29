@@ -40,14 +40,21 @@ router.get("/editmodule/quiz/question/:_id", (req, res) => {
 
 //Post new Module
 router.post("/", (req, res) => {
-  new Module({
-    moduleCode: req.body.moduleCode,
-    title: req.body.title,
-    body: req.body.body,
-    public: req.body.public
-  })
-    .save()
-    .then(module => res.json(module));
+  Module.findOne({ moduleCode: req.body.moduleCode }, (err, module) => {
+    if (err) console.log(`Error finding module: ${module} Error: ${module}`);
+    else if (!module) {
+      new Module({
+        moduleCode: req.body.moduleCode,
+        title: req.body.title,
+        body: req.body.body,
+        public: req.body.public
+      })
+        .save()
+        .then(module => res.json(module));
+    } else {
+      res.json({ errMassage: "Module Code Exists" });
+    }
+  });
 });
 
 //Post new Quiz Question
@@ -85,6 +92,30 @@ router.post("/editmodule", (req, res) => {
   );
 });
 
+// Change Module Status
+router.post("/editmodule/updatestatus", (req, res) => {
+  console.log("MODULEID: " + req.body._id);
+  // const updatedModule = {
+  //   moduleCode: req.body.moduleCode,
+  //   title: req.body.title,
+  //   body: req.body.body,
+  //   public: req.body.public
+  //   // })
+  //   //   .save()
+  //   //   .then(module => res.json(module));
+  // };
+  // console.log(updatedModule);
+
+  // Module.findOneAndUpdate(
+  //   { _id: req.body._id },
+  //   updatedModule,
+  //   (err, module) => {
+  //     if (err) console.log(`Error finding module: ${module} Error: ${module}`);
+  //     else res.json(module);
+  //   }
+  // );
+});
+
 //Update Existing Quiz Question
 router.post("/editmodule/editquiz/:_id", (req, res) => {
   console.log(req.body._id);
@@ -102,6 +133,13 @@ router.post("/editmodule/editquiz/:_id", (req, res) => {
       else res.json(question);
     }
   );
+});
+
+//Handle delete module with id
+router.delete("/delete/:id", (req, res) => {
+  Module.findById(req.params.id)
+    .then(module => module.remove().then(() => res.json({ success: true })))
+    .catch(err => res.status(404).json({ success: false }));
 });
 
 //Handle delete quiz questions

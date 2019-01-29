@@ -17,16 +17,33 @@ class Register extends Component {
   constructor() {
     super();
     this.validatePassword = this.validatePassword.bind(this);
+    this.checkPassword = this.checkPassword.bind(this);
     this.register = this.register.bind(this);
     this.state = {
       email: "",
       password: "",
       confPassword: "",
+      strongPassword: true,
       invalid: false,
       emailInvalid: false,
       redirect: false,
-      registerSucceed: false
+      registerSucceed: false,
+      webmail: true
     };
+  }
+
+  checkPassword(e) {
+    let password = e.target.value;
+    if (
+      new RegExp(/[0-9]/).test(password) &&
+      new RegExp(/[a-z]/).test(password) &&
+      new RegExp(/[A-Z]/).test(password) &&
+      password.length >= 8
+    ) {
+      this.setState({ password: md5(e.target.value), strongPassword: true });
+    } else {
+      this.setState({ strongPassword: false });
+    }
   }
 
   validatePassword(e) {
@@ -38,21 +55,35 @@ class Register extends Component {
 
   register(e) {
     e.preventDefault();
-    const newUser = {
-      email: this.state.email,
-      password: this.state.password
-    };
-    axios.post("/handleregister", newUser).then(res => {
-      console.log("res.data");
-      if (res.data.success === true) {
-        setTimeout(() => {
-          this.setState({ redirect: true });
-        }, 1000);
-        this.setState({ registerSucceed: true });
-      } else {
-        this.setState({ emailInvalid: true });
-      }
-    });
+    if (
+      this.state.email.length <= 1 ||
+      this.state.password.length <= 1 ||
+      this.state.invalid
+    ) {
+      console.log("Cant process");
+    } else if (
+      this.state.email.substring(this.state.email.length - 20).toUpperCase() !==
+      "WEBMAIL.UWINNIPEG.CA"
+    ) {
+      console.log("use webmail");
+      this.setState({ webmail: false });
+    } else {
+      const newUser = {
+        email: this.state.email,
+        password: this.state.password
+      };
+      axios.post("/handleregister", newUser).then(res => {
+        console.log("res.data");
+        if (res.data.success === true) {
+          setTimeout(() => {
+            this.setState({ redirect: true });
+          }, 1000);
+          this.setState({ registerSucceed: true });
+        } else {
+          this.setState({ emailInvalid: true });
+        }
+      });
+    }
   }
 
   renderRedirect = () => {
@@ -79,14 +110,6 @@ class Register extends Component {
           </a>
         </nav>
         <Container
-          hidden={!this.state.registerSucceed}
-          className="text-center"
-          style={{ marginTop: "20rem" }}
-        >
-          <div className="display-1 font-weight-bold">Register Succeed!</div>
-          <div className="h1 my-5 py-5"> Redirecting to Homepage</div>
-        </Container>
-        <Container
           hidden={this.state.registerSucceed}
           className="text-center"
           style={{ marginTop: "20rem" }}
@@ -96,9 +119,9 @@ class Register extends Component {
             <div className="col col-md-6">
               <form className="text-left mb-4">
                 <FormGroup>
-                  <Label>Enter Your Webmail Address</Label>
+                  <Label>Enter Webmail Address</Label>
                   <Input
-                    placeholder="Enter your Password"
+                    placeholder="username@webmail.uwinnipeg.ca"
                     type="email"
                     invalid={this.state.emailInvalid}
                     onChange={e => {
@@ -106,7 +129,9 @@ class Register extends Component {
                     }}
                   />
                   <FormFeedback>
-                    The email address you have entered is already registered.
+                    {this.state.webmail
+                      ? "The email address you have entered is already registered."
+                      : "Please use your Webmail address"}
                   </FormFeedback>
                 </FormGroup>
                 <FormGroup>
@@ -114,10 +139,13 @@ class Register extends Component {
                   <Input
                     placeholder="Enter your Password"
                     type="password"
-                    onChange={e => {
-                      this.setState({ password: md5(e.target.value) });
-                    }}
+                    invalid={!this.state.strongPassword}
+                    onChange={this.checkPassword}
                   />
+                  <FormFeedback>
+                    Password must be at least 8 characters including 1 uppercase
+                    , 1 lowercase, and 1 numeric letter.
+                  </FormFeedback>
                 </FormGroup>
                 <FormGroup>
                   <Label>Confirm Password</Label>

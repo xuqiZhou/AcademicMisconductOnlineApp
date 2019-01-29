@@ -1,89 +1,90 @@
 import React, { Component } from "react";
 import { Container, Button } from "reactstrap";
-import {
-  FormGroup,
-  ControlLabel,
-  HelpBlock,
-  FormControl
-} from "react-bootstrap";
+import { Label, Input, FormGroup } from "reactstrap";
 import { Link } from "react-router-dom";
-
-function FieldGroup({ id, label, help, ...props }) {
-  return (
-    <FormGroup controlId={id}>
-      <ControlLabel>{label}</ControlLabel>
-      <FormControl {...props} />
-      {help && <HelpBlock>{help}</HelpBlock>}
-    </FormGroup>
-  );
-}
+import UWImage from "../UW_left-stack_white.png";
 
 class EntryPage extends Component {
   state = {};
   render() {
     return (
-      <Container className="text-center" style={{ marginTop: "20rem" }}>
-        <h1>Login</h1>
-        <div className="row">
-          <div className="col-none col-md-3" />
-          <div className="col col-md-6">
-            <form className="text-left mb-4">
-              <FieldGroup
-                id="formControlsEmail"
-                type="email"
-                label="Email address"
-                aria-describedby="emailHelp"
-                placeholder="username@webmail.uwinnipeg.ca"
-              />
-              <FieldGroup
-                id="formControlsPassword"
-                label="Password"
-                type="password"
-                placeholder="Enter your Password"
-              />
-              <Button className="mt-5 text-white" color="dark" block>
-                Login
+      <React.Fragment>
+        <nav
+          style={{ borderRadius: 0, position: "fixed !important" }}
+          className="navbar navbar-expand-lg bg-dark mb-0"
+        >
+          <a className="nav-link" href="https://www.uwinnipeg.ca/">
+            <img
+              src={UWImage}
+              style={{ width: "8rem" }}
+              className="img-fluid"
+              alt="UW logo"
+            />
+          </a>
+        </nav>
+        <Container className="text-center" style={{ marginTop: "18rem" }}>
+          <h1>Login</h1>
+          <div className="row">
+            <div className="col-none col-md-3" />
+            <div className="col col-md-6">
+              <form className="text-left mb-4">
+                <FormGroup>
+                  <Label>Enter Webmail Address</Label>
+                  <Input
+                    placeholder="username@webmail.uwinnipeg.ca"
+                    type="email"
+                  />
+                </FormGroup>
+
+                <FormGroup>
+                  <Label>Password</Label>
+                  <Input placeholder="Enter your Password" type="password" />
+                </FormGroup>
+                <Button className="mt-5 text-white" color="dark" block>
+                  Login
+                </Button>
+              </form>
+              <Button className="mb-5" type="submit" color="dark" block>
+                <Link
+                  style={{ textDecoration: "none" }}
+                  className="text-white"
+                  to="/home"
+                >
+                  Continue Without Login
+                </Link>
               </Button>
-            </form>
-            <Button className="mb-5" type="submit" color="dark" block>
               <Link
+                className="text-dark"
                 style={{ textDecoration: "none" }}
-                className="text-white"
-                to="/home"
+                to="/register"
               >
-                Continue Without Login
+                Register
+              </Link>{" "}
+              -&nbsp;
+              <Link
+                className="text-dark"
+                style={{ textDecoration: "none" }}
+                to="/forgetpassword"
+              >
+                Forget Password
               </Link>
-            </Button>
-            <Link
-              className="text-dark"
-              style={{ textDecoration: "none" }}
-              to="/register"
-            >
-              Register
-            </Link>{" "}
-            -&nbsp;
-            <Link
-              className="text-dark"
-              style={{ textDecoration: "none" }}
-              to="createaccount"
-            >
-              Forget Password
-            </Link>
+            </div>
+            <div className="col-none col-md-3" />
           </div>
-          <div className="col-none col-md-3" />
-        </div>
-        <div>
-          Links below will be removed after authentication has been implemented
-        </div>
-        <div className="text-center">
-          <Link to="/home">Guest</Link>
-          <br />
-          <Link to="/student/home">Student</Link>
-          <br />
-          <Link to="/admin/home">Admin</Link>
-          <br />
-        </div>
-      </Container>
+          <div>
+            Links below will be removed after authentication has been
+            implemented
+          </div>
+          <div className="text-center">
+            <Link to="/home">Guest</Link>
+            <br />
+            <Link to="/student/home">Student</Link>
+            <br />
+            <Link to="/admin/home">Admin</Link>
+            <br />
+          </div>
+        </Container>
+      </React.Fragment>
     );
   }
 }

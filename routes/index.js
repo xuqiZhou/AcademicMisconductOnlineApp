@@ -59,18 +59,6 @@ router.post("/handleregister", (req, res) => {
   });
 });
 
-// router.post("/processlogin", function(req, res) {
-//     User.findOne({ userName: req.body.userName }, (err, user) => {
-//         if (err) console.log(`Error finding user: ${user}. Error: ${err}`);
-//         else if (!user) res.render("login", { message: newDiv.passwordFalied });
-//         else if (user.password === md5(req.body.password)) {
-//             req.session.user = user;
-//             if (user.role === "admin") res.redirect(303, "admin");
-//             else res.redirect(303, "user");
-//         } else res.render("login", { message: newDiv.passwordFalied });
-//     });
-// });
-
 router.post("/processlogin", function(req, res) {
   console.log(req.body.userName);
 });

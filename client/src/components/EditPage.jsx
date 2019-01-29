@@ -1,6 +1,14 @@
 import React, { Component } from "react";
 import { Link, Redirect } from "react-router-dom";
-import { Container, Form, FormGroup, Col, Button, Input } from "reactstrap";
+import {
+  Container,
+  Form,
+  FormGroup,
+  Col,
+  Button,
+  Input,
+  FormFeedback
+} from "reactstrap";
 import { Modal } from "react-bootstrap";
 import axios from "axios";
 import Navbar from "./MyNavbar";
@@ -14,14 +22,17 @@ class EditPage extends Component {
     this.handleCloseCreate = this.handleCloseCreate.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.setRedirect = this.setRedirect.bind(this);
+    this.deleteModule = this.deleteModule.bind(this);
     this.state = {
       exitingModules: [],
-      show: false,
+      show: true,
       showCreate: false,
       newModuleCode: "",
       redirect: false,
       newModuleId: "",
-      disBtn: true
+      disBtn: true,
+      invalidCode: false,
+      moduleCodeExist: false
     };
   }
 
@@ -29,43 +40,55 @@ class EditPage extends Component {
   componentDidMount() {
     fetch("/admin/edit")
       .then(res => res.json())
-      .then(exitingModules =>
-        this.setState({ exitingModules }, () => {
-          console.log(exitingModules);
-        })
-      );
+      .then(exitingModules => this.setState({ exitingModules }, () => {}));
   }
 
   // handle close and open for btn 'edit exiting module'
   handleClose() {
     this.setState({ show: false });
   }
-
   handleShow() {
     this.setState({ show: true });
   }
-
   // handle close and open for btn 'Create new moudle'
   handleCloseCreate() {
     this.setState({ showCreate: false });
   }
-
   handleShowCreate() {
     this.setState({ showCreate: true });
   }
 
+  deleteModule(e) {
+    console.log(e.target.value);
+    const moduleId = e.target.value;
+    axios.delete(`/admin/edit/delete/${moduleId}`).then(() =>
+      this.setState({
+        exitingModules: this.state.exitingModules.filter(
+          module => module._id !== moduleId
+        )
+      })
+    );
+  }
+
   // Create Brand New Module
   clickCreate = () => {
-    const newModule = {
-      moduleCode: this.state.newModuleCode,
-      title: "",
-      body: "",
-      public: false
-    };
-    axios.post("/admin/edit", newModule).then(res => {
-      this.setState({ newModuleId: res.data._id, disBtn: false });
-      console.log(this.state);
-    });
+    const moduleCode = this.state.newModuleCode;
+    if (moduleCode.length < 1) {
+      this.setState({ invalidCode: true });
+    } else {
+      const newModule = {
+        moduleCode: moduleCode,
+        title: "",
+        body: "",
+        public: false
+      };
+      axios.post("/admin/edit", newModule).then(res => {
+        if (!res.data._id) {
+          this.setState({ moduleCodeExist: true, invalidCode: true });
+        }
+        this.setState({ newModuleId: res.data._id, disBtn: false });
+      });
+    }
   };
 
   setRedirect() {
@@ -82,25 +105,111 @@ class EditPage extends Component {
     }
   };
 
-  getExistingModules() {
-    return this.state.exitingModules.map(module => (
+  updatePublicStatus(e) {
+    const module = { _id: e.target.value };
+    console.log(module);
+
+    axios
+      .post("/admin/edit/editmodule/updatestatus", module)
+      .then(res => console.log(res.data));
+  }
+
+  getPublishedModules() {
+    let target = [];
+    for (let prop in this.state.exitingModules) {
+      if (this.state.exitingModules.hasOwnProperty(prop)) {
+        target[prop] = this.state.exitingModules[prop];
+      }
+    }
+    target = target.filter(module => module.public === true);
+    return target.map(module => (
       <React.Fragment key={module._id}>
-        <div className="text-white m-5 bg-dark" style={{ height: "100px" }}>
-          <Link
-            style={{
-              color: "inherit",
-              textDecoration: "none",
-              opacity: 1,
-              display: "block",
-              width: "100%",
-              height: "50px",
-              transition: "0.5s ease",
-              backfaceVisibility: "hidden"
-            }}
-            to={`/admin/edit/editmodule/${module._id}`}
-          >
-            {module.moduleCode}
-          </Link>
+        <div className="row m-5">
+          <div className="col h4">{module.moduleCode}</div>
+          <div className="col">
+            <div className="btn-group" role="group" aria-label="...">
+              <Button
+                onClick={() => console.log("inside link")}
+                color="secondary"
+                size="sm"
+              >
+                <Link
+                  style={{ textDecoration: "none" }}
+                  className="text-white"
+                  to={`/admin/edit/editmodule/${module._id}`}
+                >
+                  Edit
+                </Link>
+              </Button>
+              <Button
+                className="text-white btn-sm btn-dark"
+                value={module._id}
+                onClick={this.updatePublicStatus}
+              >
+                Hide
+              </Button>
+              <Button
+                className="text-white"
+                size="sm"
+                color="danger"
+                value={module._id}
+                onClick={this.deleteModule}
+              >
+                Delete
+              </Button>
+            </div>
+          </div>
+        </div>
+        <hr className="d-block" style={{ width: "80%" }} />
+      </React.Fragment>
+    ));
+  }
+
+  getExistingModules() {
+    let target = [];
+    for (let prop in this.state.exitingModules) {
+      if (this.state.exitingModules.hasOwnProperty(prop)) {
+        target[prop] = this.state.exitingModules[prop];
+      }
+    }
+    target = target.filter(module => module.public === false);
+    return target.map(module => (
+      <React.Fragment key={module._id}>
+        <div className="row m-5">
+          <div className="col h4">{module.moduleCode}</div>
+          <div className="col">
+            <div className="btn-group" role="group" aria-label="...">
+              <Button
+                onClick={() => console.log("inside link")}
+                color="secondary"
+                size="sm"
+              >
+                <Link
+                  style={{ textDecoration: "none" }}
+                  className="text-white"
+                  to={`/admin/edit/editmodule/${module._id}`}
+                >
+                  Edit
+                </Link>
+              </Button>
+              <Button
+                className="text-white btn-sm btn-dark"
+                value={module._id}
+                onClick={this.updatePublicStatus}
+              >
+                Publish
+              </Button>
+              <Button
+                className="text-white"
+                size="sm"
+                color="danger"
+                value={module._id}
+                onClick={this.deleteModule}
+              >
+                Delete
+              </Button>
+            </div>
+          </div>
         </div>
         <hr className="d-block" style={{ width: "80%" }} />
       </React.Fragment>
@@ -200,11 +309,17 @@ class EditPage extends Component {
                     <FormGroup row>
                       <Col sm={7}>
                         <Input
+                          invalid={this.state.invalidCode}
                           onChange={e => {
                             this.setState({ newModuleCode: e.target.value });
                           }}
                           placeholder="Enter Unique Module Code"
                         />
+                        <FormFeedback className="text-left">
+                          {this.state.moduleCodeExist
+                            ? "Module Code Exists"
+                            : "Please Enter a Valid Code"}
+                        </FormFeedback>
                       </Col>
                       <Col sm={{ size: 5 }}>
                         <div
@@ -233,7 +348,7 @@ class EditPage extends Component {
                 </Modal.Body>
               </Modal>
 
-              {/* Edit Existing Module */}
+              {/* Edit Existing */}
               <Modal show={this.state.show} onHide={this.handleClose}>
                 <Modal.Header>
                   <Modal.Title style={{ margin: "0 auto" }} className="row">
@@ -243,7 +358,13 @@ class EditPage extends Component {
                 <Modal.Body className="text-center">
                   {this.getExistingModules()}
                 </Modal.Body>
-                <Modal.Footer className="mx-auto" />
+
+                <Modal.Title style={{ margin: "0 auto" }} className="row">
+                  Published
+                </Modal.Title>
+                <Modal.Body className="text-center">
+                  {this.getPublishedModules()}
+                </Modal.Body>
               </Modal>
             </div>
             <div className="col-md" />

@@ -10,26 +10,7 @@ class Home extends Component {
     super();
     this.module = this.module.bind(this);
     this.state = {
-      modules: [],
-      // modules: [
-      //   {
-      //     moduleName: "Introduction",
-      //     moduleHref: "module/introduction",
-      //     isActive: true
-      //   },
-      //   {
-      //     moduleName: "Plagiarism",
-      //     moduleHref: "module/plagiarism",
-      //     isActive: true
-      //   },
-      //   {
-      //     moduleName: "Cheating",
-      //     moduleHref: "module/cheating",
-      //     isActive: true
-      //   },
-      //   { moduleName: "More...", moduleHref: "", isActive: false }
-      // ],
-      userStatus: "guest" //Get this info from back-end ('guest', 'admin', 'student')
+      modules: []
     };
   }
 

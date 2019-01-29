@@ -12,6 +12,7 @@ import QuizPage from "./components/QuizPage";
 import EditPage from "./components/EditPage";
 import CreateModule from "./components/CreateModule";
 import StudentScore from "./components/StudentScore";
+import ForgetPassword from "./components/ForgetPassword";
 
 import "./App.css";
 import EntryPage from "./components/EntryPoint";
@@ -35,8 +36,9 @@ class App extends Component {
     return (
       <Router>
         <div>
-          <Route exact path="/" render={() => <EntryPage />} />
-          <Route exact path="/register" render={() => <Register />} />
+          <Route exact path="/" component={EntryPage} />
+          <Route exact path="/forgetpassword" component={ForgetPassword} />
+          <Route exact path="/register" component={Register} />
           <Route exact path="/home" render={() => <Home role="guest" />} />
           <Route
             exact
