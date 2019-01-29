@@ -99,7 +99,7 @@ class EditPage extends Component {
             }}
             to={`/admin/edit/editmodule/${module._id}`}
           >
-            {module.title}
+            {module.moduleCode}
           </Link>
         </div>
         <hr className="d-block" style={{ width: "80%" }} />

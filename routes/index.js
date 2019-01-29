@@ -31,6 +31,7 @@ router.get("/module/quiz/:moduleId", (req, res) => {
     if (err) console.log(`Error finding module: ${module} Error: ${module}`);
     else if (!quizQuestions) res.json({ errMassage: "Module Not Exist" });
     else {
+      console.log(quizQuestions);
       res.json(quizQuestions);
     }
   });

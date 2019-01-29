@@ -5,6 +5,7 @@ import uuid from "uuid";
 // Data
 import Navbar from "./MyNavbar";
 import Footer from "./Footer";
+import axios from "axios";
 
 class QuizPage extends Component {
   constructor(props) {
@@ -14,7 +15,8 @@ class QuizPage extends Component {
       moduleFetched: false,
       questionNotFetched: true,
       moduleId: "",
-      moduleTitle: ""
+      moduleTitle: "",
+      persons: []
     };
   }
 
@@ -32,12 +34,13 @@ class QuizPage extends Component {
 
   fetchQuestion() {
     if (this.state.moduleFetched && this.state.questionNotFetched) {
-      fetch(`/admin/edit/editmodule/quiz/${this.state.moduleId}`)
-        .then(res => res.json())
-        .then(questions => {
-          console.log(questions);
-          this.setState({ questions, questionNotFetched: false });
-        });
+      console.log(`fetchquestion ${this.state.moduleId}`);
+
+      axios.get(`/module/quiz/${this.state.moduleId}`).then(res => {
+        const questions = res.data;
+        this.setState({ questions: questions, questionNotFetched: false });
+        console.log(this.state.questions);
+      });
     }
   }
 
@@ -47,7 +50,7 @@ class QuizPage extends Component {
         {this.fetchQuestion()}
         <Navbar role={this.props.role} page="quiz" />
         <Container>
-          <h1 className="text-center m-5 p-5">{this.props.moduleCode}</h1>
+          <h1 className="text-center m-5 p-5">{this.state.moduleTitle}</h1>
           <form>
             {this.getQuestions()}
             <div className="m-5">
@@ -68,7 +71,7 @@ class QuizPage extends Component {
         <Card className="text-dark bg-light">
           <CardBody className="card-body m-md-2 m-lg-4">
             {index + 1}.
-            <p className="mx-md-5">
+            <p className="h4 mx-md-5">
               {question.question}
               <br />
             </p>
@@ -81,7 +84,6 @@ class QuizPage extends Component {
       </React.Fragment>
     ));
   }
-
   // Scramble the options
   getOptions(question) {
     let optionArray = question.options;
@@ -99,7 +101,7 @@ class QuizPage extends Component {
           id={option}
           value={option}
         />
-        <label className="form-check-label mx-5">{option.description}</label>
+        <label className="form-check-label mx-5">{option}</label>
       </div>
     ));
   }
