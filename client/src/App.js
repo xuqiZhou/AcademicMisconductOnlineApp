@@ -1,7 +1,6 @@
 // /* jshint ignore:start */
 import React, { Component } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
-
 import Route from "react-router-dom/Route";
 // App Components
 import Register from "./components/Register";
@@ -13,9 +12,9 @@ import EditPage from "./components/EditPage";
 import CreateModule from "./components/CreateModule";
 import StudentScore from "./components/StudentScore";
 import ForgetPassword from "./components/ForgetPassword";
+import Login from "./components/Login";
 
 import "./App.css";
-import EntryPage from "./components/EntryPoint";
 
 class App extends Component {
   state = {
@@ -36,7 +35,7 @@ class App extends Component {
     return (
       <Router>
         <div>
-          <Route exact path="/" component={EntryPage} />
+          <Route exact path="/" component={Login} />
           <Route exact path="/forgetpassword" component={ForgetPassword} />
           <Route exact path="/register" component={Register} />
           <Route exact path="/home" render={() => <Home role="guest" />} />

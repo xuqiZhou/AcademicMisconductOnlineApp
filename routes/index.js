@@ -57,8 +57,20 @@ router.post("/handleregister", (req, res) => {
   });
 });
 
-router.post("/processlogin", function(req, res) {
-  console.log(req.body.userName);
+router.post("/processlogin", (req, res) => {
+  User.findOne({ email: req.body.email }, (err, user) => {
+    if (err) console.log(`Error finding user: ${user} Error: ${err}`);
+    else if (!user) res.json({ success: false, errMassage: "User not exist" });
+    else if (user.password === req.body.password) {
+      req.session.user = user;
+      if (user.type === "admin") res.json({ success: true, role: "admin" });
+      // if (user.type === "admin") res.json(303, "admin");
+      else res.json({ success: true, role: "student" });
+    } else res.json({ success: false, errMassage: "Password not correct" });
+  });
 });
 
 module.exports = router;
+
+// username@webmail.uwinnipeg.ca
+// aaaaaa1B

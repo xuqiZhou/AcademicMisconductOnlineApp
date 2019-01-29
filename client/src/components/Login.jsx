@@ -1,14 +1,46 @@
 import React, { Component } from "react";
 import { Container, Button } from "reactstrap";
 import { Label, Input, FormGroup } from "reactstrap";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
+import md5 from "md5";
+import axios from "axios";
 import UWImage from "../UW_left-stack_white.png";
 
 class EntryPage extends Component {
-  state = {};
+  constructor() {
+    super();
+    this.onLogin = this.onLogin.bind(this);
+    this.state = {
+      email: "",
+      password: "",
+      role: "",
+      redirect: false
+    };
+  }
+
+  onLogin() {
+    axios.post("processlogin", this.state).then(res => {
+      if (res.data.success) {
+        if (res.data.role === "student") {
+          this.setState({ role: "student", redirect: true });
+        } else if (res.data.role === "admin") {
+          this.setState({ role: "admin", redirect: true });
+        }
+      }
+    });
+  }
+
+  renderRedirect = () => {
+    if (this.state.redirect) {
+      if (this.state.role === "admin") return <Redirect to={"/admin/home"} />;
+      else return <Redirect to={"/student/home"} />;
+    }
+  };
+
   render() {
     return (
       <React.Fragment>
+        {this.renderRedirect()}
         <nav
           style={{ borderRadius: 0, position: "fixed !important" }}
           className="navbar navbar-expand-lg bg-dark mb-0"
@@ -33,14 +65,27 @@ class EntryPage extends Component {
                   <Input
                     placeholder="username@webmail.uwinnipeg.ca"
                     type="email"
+                    onChange={e => {
+                      this.setState({ email: e.target.value });
+                    }}
                   />
                 </FormGroup>
-
                 <FormGroup>
                   <Label>Password</Label>
-                  <Input placeholder="Enter your Password" type="password" />
+                  <Input
+                    onChange={e => {
+                      this.setState({ password: md5(e.target.value) });
+                    }}
+                    placeholder="Enter your Password"
+                    type="password"
+                  />
                 </FormGroup>
-                <Button className="mt-5 text-white" color="dark" block>
+                <Button
+                  onClick={this.onLogin}
+                  className="mt-5 text-white"
+                  color="dark"
+                  block
+                >
                   Login
                 </Button>
               </form>
@@ -71,7 +116,7 @@ class EntryPage extends Component {
             </div>
             <div className="col-none col-md-3" />
           </div>
-          <div>
+          {/* <div>
             Links below will be removed after authentication has been
             implemented
           </div>
@@ -82,7 +127,7 @@ class EntryPage extends Component {
             <br />
             <Link to="/admin/home">Admin</Link>
             <br />
-          </div>
+          </div> */}
         </Container>
       </React.Fragment>
     );
