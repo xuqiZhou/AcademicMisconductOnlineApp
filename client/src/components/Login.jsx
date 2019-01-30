@@ -116,7 +116,7 @@ class EntryPage extends Component {
             </div>
             <div className="col-none col-md-3" />
           </div>
-          {/* <div>
+          <div>
             Links below will be removed after authentication has been
             implemented
           </div>
@@ -127,7 +127,7 @@ class EntryPage extends Component {
             <br />
             <Link to="/admin/home">Admin</Link>
             <br />
-          </div> */}
+          </div>
         </Container>
       </React.Fragment>
     );

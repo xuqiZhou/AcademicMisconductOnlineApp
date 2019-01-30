@@ -16,6 +16,19 @@ import Login from "./components/Login";
 
 import "./App.css";
 
+// const PrivateRoute = ({ component: Component, ...rest }) => (
+//   <Route
+//     {...rest}
+//     render={props =>
+//       fakeAuth.isAuthenticated === true ? (
+//         <Component {...props} />
+//       ) : (
+//         <Redirect to="/" />
+//       )
+//     }
+//   />
+// );
+
 class App extends Component {
   state = {
     // userStatus: "guest",
@@ -31,6 +44,15 @@ class App extends Component {
   //     );
   //   }
   // }
+  componentDidMount() {
+    console.log("did mount");
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    console.log("will update");
+    localStorage.setItem("contacts", "somethind");
+  }
+
   render() {
     return (
       <Router>

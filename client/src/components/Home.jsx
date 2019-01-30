@@ -1,7 +1,7 @@
 /*jshint ignore: start*/
 import React, { Component } from "react";
 import { Jumbotron } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import Navbar from "./MyNavbar";
 import Footer from "./Footer";
 
@@ -10,21 +10,51 @@ class Home extends Component {
     super();
     this.module = this.module.bind(this);
     this.state = {
-      modules: []
+      modules: [],
+      redirect: true
     };
   }
 
-  componentDidMount() {
-    fetch("/home")
+  componentWillMount() {
+    fetch("/admin/home")
       .then(res => res.json())
-      .then(modules => {
-        this.setState({ modules });
+      .then(result => {
+        if (result.success === true) {
+          this.setState({ redirect: false });
+        } else {
+          console.log("Success: false");
+          console.log(result);
+        }
       });
+
+    // componentDidMount() {
+    //   fetch("/admin/home")
+    //     .then(res => res.json())
+    //     .then(result => {
+    //       if (result.success === false) {
+    //         this.setState({ redirect: true });
+    //       } else {
+    //         console.log("Success: true");
+    //         console.log(result);
+    //       }
+    //     });
+    //   // fetch("/home")
+    //   .then(res => res.json())
+    //   .then(modules => {
+    //     this.setState({ modules });
+    //   });
   }
+
+  renderRedirect = () => {
+    if (!this.state.redirect) {
+      return <Redirect to="/" />;
+    }
+  };
 
   render() {
     return (
       <React.Fragment>
+        {this.renderRedirect()}
         <div>
           <Navbar
             role={this.props.role}
