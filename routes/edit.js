@@ -4,78 +4,43 @@ const Module = require("../models/Module");
 const QuizQuestion = require("../models/QuizQuestion");
 
 // Get all modules
-router.get("/", (req, res) => {
-  if (!req.session.user) {
-    res.json({ success: false, errMassage: "Need to Login" });
-  } else {
-    if (req.session.user.type === "admin") {
-      Module.find((err, modules) => {
-        if (err) console.log(err);
-        else {
-          res.json(modules);
-        }
-      });
-    } else {
-      res.json({ success: false, errMassage: "Not Admin" });
+router.get("/", (err, res) => {
+  Module.find((err, modules) => {
+    if (err) console.log(err);
+    else {
+      res.json(modules);
     }
-  }
-  // Module.find().then(modules => res.json(modules));
+  });
 });
 
 // Get Module Content for id
 router.get("/editmodule/:_id", (req, res) => {
-  if (!req.session.user) {
-    res.json({ success: false, errMassage: "Need to Login" });
-  } else {
-    if (req.session.user.type === "admin") {
-      Module.findById(req.params._id, (err, module) => {
-        if (err)
-          console.log(`Error finding module: ${module} Error: ${module}`);
-        else if (!module) res.json({ title: "", body: "" });
-        else res.json(module);
-      });
-    } else {
-      res.json({ success: false, errMassage: "Not Admin" });
-    }
-  }
+  Module.findById(req.params._id, (err, module) => {
+    if (err) console.log(`Error finding module: ${module} Error: ${module}`);
+    else if (!module) res.json({ title: "", body: "" });
+    else res.json(module);
+  });
 });
 
 // Get Quiz Questions with module id
 router.get("/editmodule/quiz/:_id", (req, res) => {
-  if (!req.session.user) {
-    res.json({ success: false, errMassage: "Need to Login" });
-  } else {
-    if (req.session.user.type === "admin") {
-      QuizQuestion.find({ moduleId: req.params._id }, (err, quizQuestions) => {
-        if (err)
-          console.log(`Error finding module: ${module} Error: ${module}`);
-        else if (!quizQuestions) res.json({ errMassage: "Module Not Exist" });
-        else {
-          res.json(quizQuestions);
-        }
-      });
-    } else {
-      res.json({ success: false, errMassage: "Not Admin" });
+  QuizQuestion.find({ moduleId: req.params._id }, (err, quizQuestions) => {
+    if (err) console.log(`Error finding module: ${module} Error: ${module}`);
+    else if (!quizQuestions) res.json({ errMassage: "Module Not Exist" });
+    else {
+      res.json(quizQuestions);
     }
-  }
+  });
 });
 
 // Get Quiz Questions with question id
 router.get("/editmodule/quiz/question/:_id", (req, res) => {
-  if (!req.session.user) {
-    res.json({ success: false, errMassage: "Need to Login" });
-  } else {
-    if (req.session.user.type === "admin") {
-      QuizQuestion.findById(req.params._id, (err, question) => {
-        if (err)
-          console.log(`Error finding question: ${question} Error: ${question}`);
-        else if (!question) res.json({ errMassage: "Question not found" });
-        else res.json(question);
-      });
-    } else {
-      res.json({ success: false, errMassage: "Not Admin" });
-    }
-  }
+  QuizQuestion.findById(req.params._id, (err, question) => {
+    if (err)
+      console.log(`Error finding question: ${question} Error: ${question}`);
+    else if (!question) res.json({ errMassage: "Question not found" });
+    else res.json(question);
+  });
 });
 
 // Post new Module
