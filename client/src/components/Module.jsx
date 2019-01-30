@@ -31,7 +31,7 @@ class ModulePage extends Component {
   render() {
     return (
       <React.Fragment>
-        <Navbar role={this.props.role} page="module" />
+        <Navbar role={this.props.type} page="module" />
         <div className="container">
           <div className="mx-md-5">
             <h1 className="text-center my-5 py-5">{this.state.title}</h1>

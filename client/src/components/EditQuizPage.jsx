@@ -103,7 +103,7 @@ class EditQuizPage extends Component {
   render() {
     return (
       <React.Fragment>
-        <Navbar role={this.props.role} />
+        <Navbar role={this.props.type} />
         <Container>
           <h2 className="text-center my-5 py-5">{this.state.moduleName}</h2>
           {this.state.quizQuestions.map((question, index) => (

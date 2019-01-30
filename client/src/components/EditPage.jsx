@@ -225,7 +225,7 @@ class EditPage extends Component {
     return (
       <React.Fragment>
         {this.renderRedirect()}
-        <Navbar role={this.props.role} page="quiz" />
+        <Navbar role={this.props.type} page="quiz" />
         <Container>
           <h2 className="text-center mt-5 pt-5">What you can do</h2>
           <div className="row">

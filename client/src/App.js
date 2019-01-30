@@ -13,108 +13,91 @@ import CreateModule from "./components/CreateModule";
 import StudentScore from "./components/StudentScore";
 import ForgetPassword from "./components/ForgetPassword";
 import Login from "./components/Login";
-import Auth from "./components/AuthenticatedComponent";
 
 class App extends Component {
-  state = {
-    // userStatus: "guest",
-    // role: "student"
-  };
-  //   render() {
-  //     return (
-  //       <Router>
-  //         <div>
-  //           <Redirectsss />
-  //         </div>
-  //       </Router>
-  //     );
-  //   }
-  // }
+  state = {};
 
   render() {
     return (
       <Router>
         <div>
           <Route exact path="/" component={Login} />
-
           <Route exact path="/forgetpassword" component={ForgetPassword} />
           <Route exact path="/register" component={Register} />
-          <Auth>
-            <Route exact path="/home" render={() => <Home role="guest" />} />
-          </Auth>
+          <Route exact path="/home" render={() => <Home type="guest" />} />
           <Route
             exact
             path="/module/:moduleName"
             render={({ match }) => (
-              <Module role="guest" moduleCode={match.params.moduleName} />
+              <Module type="guest" moduleCode={match.params.moduleName} />
             )}
           />
           <Route
             path="/module/:moduleCode/quiz"
             render={({ match }) => (
-              <QuizPage role="guest" moduleCode={match.params.moduleCode} />
+              <QuizPage type="guest" moduleCode={match.params.moduleCode} />
             )}
           />
           {/* student routes */}
           <Route
             exact
             path="/student/home"
-            render={() => <Home role="student" />}
+            render={() => <Home type="student" />}
           />
           <Route
             exact
             path="/student/module/:moduleName"
             render={({ match }) => (
-              <Module role="student" moduleCode={match.params.moduleName} />
+              <Module type="student" moduleCode={match.params.moduleName} />
             )}
           />
           <Route
             path="/student/module/:moduleCode/quiz"
             render={({ match }) => (
-              <QuizPage role="student" moduleCode={match.params.moduleCode} />
+              <QuizPage type="student" moduleCode={match.params.moduleCode} />
             )}
           />
           {/* admin routes */}
           <Route
             exact
             path="/admin/home"
-            render={() => <Home role="admin" />}
+            render={() => <Home type="admin" />}
           />
           <Route
             exact
             path="/admin/module/:moduleName"
             render={({ match }) => (
-              <Module role="admin" moduleCode={match.params.moduleName} />
+              <Module type="admin" moduleCode={match.params.moduleName} />
             )}
           />
           <Route
             path="/admin/module/:moduleCode/quiz"
             render={({ match }) => (
-              <QuizPage role="admin" moduleCode={match.params.moduleCode} />
+              <QuizPage type="admin" moduleCode={match.params.moduleCode} />
             )}
           />
           <Route
             exact
             path="/admin/edit"
-            render={({ match }) => <EditPage role="admin" />}
+            render={({ match }) => <EditPage type="admin" />}
           />
           <Route
             exact
             path="/admin/edit/editmodule/:_id"
             render={({ match }) => (
-              <CreateModule role="admin" _id={match.params._id} />
+              <CreateModule type="admin" _id={match.params._id} />
             )}
           />
           <Route
             path="/admin/edit/editmodule/quiz/:_id"
             render={({ match }) => (
-              <EditQuiz role="admin" _id={match.params._id} />
+              <EditQuiz type="admin" _id={match.params._id} />
             )}
           />
           <Route
             exact
             path="/admin/studentscore"
-            render={({ match }) => <StudentScore role="admin" />}
+            render={({ match }) => <StudentScore type="admin" />}
           />
         </div>
       </Router>

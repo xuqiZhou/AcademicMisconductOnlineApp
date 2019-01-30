@@ -47,7 +47,7 @@ class QuizPage extends Component {
     return (
       <React.Fragment>
         {this.fetchQuestion()}
-        <Navbar role={this.props.role} page="quiz" />
+        <Navbar role={this.props.type} page="quiz" />
         <Container>
           <h1 className="text-center m-5 p-5">{this.state.moduleTitle}</h1>
           <form>

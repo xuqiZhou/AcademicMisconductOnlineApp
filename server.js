@@ -1,13 +1,11 @@
 const express = require("express"),
   bodyParser = require("body-parser"),
   cookieParser = require("cookie-parser"),
-  sessions = require("express-session"),
   mongoose = require("mongoose");
 const seedDB = require("./models/seed"),
   Question = require("./models/question"),
   credentials = require("./credentials"),
   db = require("./config/keys").mongoURI;
-
 // Routes
 const mainRoutes = require("./routes");
 const studentRoutes = require("./routes/students");
@@ -20,12 +18,14 @@ seedDB.seed(Question);
 
 app.use(bodyParser.json());
 app.use(cookieParser(credentials.cookieSecret));
-app.use(sessions());
 app.set("port", process.env.PORT || 5000);
 app.use(express.static(__dirname + "/public"));
 
 mongoose
-  .connect(db)
+  .connect(
+    db,
+    { useNewUrlParser: true }
+  )
   .then(() => {
     console.log("MongoDB Connected...");
   })

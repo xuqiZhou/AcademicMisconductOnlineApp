@@ -1,6 +1,4 @@
-/* jshint ignore: start */
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 
 class Footer extends Component {
   state = {
@@ -40,14 +38,14 @@ class Footer extends Component {
               {this.hr()}
               <p className="col-12 col-md-3" id="footerInfoLinks">
                 {this.state.links.map(link => (
-                  <Link
+                  <a
                     key={link.href}
-                    to={link.href}
+                    href={link.href}
                     className="text-secondary"
                   >
                     {link.name}
                     <br />
-                  </Link>
+                  </a>
                 ))}
               </p>
             </div>

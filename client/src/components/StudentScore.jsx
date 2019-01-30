@@ -8,7 +8,7 @@ class StudentScore extends Component {
   render() {
     return (
       <React.Fragment>
-        <Navbar role={this.props.role} />
+        <Navbar role={this.props.type} />
         <Container style={{ minHeight: "500px" }}>
           <h2 className="text-center my-5 py-5">Student Score</h2>
           <table className="table table-striped table-hover table-responsive-sm my-5">
