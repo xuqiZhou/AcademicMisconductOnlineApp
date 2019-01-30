@@ -1,9 +1,10 @@
 /*jshint ignore: start*/
 import React, { Component } from "react";
 import { Jumbotron } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import Navbar from "./MyNavbar";
 import Footer from "./Footer";
+import axios from "axios";
 
 class Home extends Component {
   constructor() {
@@ -40,6 +41,33 @@ class Home extends Component {
   //     return <Redirect to="/" />;
   //   }
   // };
+
+  getJWT() {
+    return localStorage.getItem("cool-jwt");
+  }
+
+  // componentDidMount() {
+  // const jwt = this.getJWT();
+  // console.log(jwt);
+  // if (jwt) {
+  //   // this.props.history.push("/");
+  //   axios
+  //     .get("/home", {
+  //       headers: { Authorization: `Bearer ${jwt}` }
+  //     })
+  //     .then(res => {
+  //       this.setState({ user: res.data });
+  //       console.log(this.state);
+  //       this.fetchData();
+  //     })
+  //     .catch(err => {
+  //       localStorage.removeItem("cool-jwt");
+  //       this.props.history.push("/");
+  //     });
+  // }
+  // }
+
+  // fetchData() {}
 
   render() {
     return (
@@ -101,7 +129,7 @@ class Home extends Component {
               id="modules"
               className="container text-white my-5 p-5"
             >
-              <div className="row pb-sm-5">{this.module()}</div>
+              {/* <div className="row pb-sm-5">{this.module()}</div> */}
               {/* <div className="row">{this.module()}</div> */}
             </div>
           </div>

@@ -13,21 +13,36 @@ class EntryPage extends Component {
     this.state = {
       email: "",
       password: "",
-      role: "",
-      redirect: false
+      role: ""
+      // redirect: false
     };
   }
 
   onLogin() {
-    axios.post("processlogin", this.state).then(res => {
-      if (res.data.success) {
-        if (res.data.role === "student") {
-          this.setState({ role: "student", redirect: true });
-        } else if (res.data.role === "admin") {
-          this.setState({ role: "admin", redirect: true });
-        }
-      }
-    });
+    // axios
+    //   .post("/processlogin", {
+    //     email: this.state.email,
+    //     password: this.state.password
+    //   })
+    //   .then(res => {
+    //     localStorage.setItem("cool-jwt", res.data);
+    // this.props.history.push("/forgetpassword");
+    //   });
+
+    axios
+      .post("processlogin", {
+        email: this.state.email,
+        password: this.state.password
+      })
+      .then(res => {
+        localStorage.setItem("cool-jwt", res.data);
+        this.props.history.push("/home");
+        // if (res.data.role === "student") {
+        //   this.setState({ role: "student", redirect: true });
+        // } else if (res.data.role === "admin") {
+        //   this.setState({ role: "admin", redirect: true });
+        // }
+      });
   }
 
   renderRedirect = () => {

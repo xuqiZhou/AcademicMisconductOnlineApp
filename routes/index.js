@@ -1,11 +1,10 @@
 const express = require("express"),
   router = express.Router(),
-  urlencodedParser = require("body-parser").urlencoded({ extended: false }),
   cookieParser = require("cookie-parser"),
   bodyParser = require("body-parser"),
   session = require("express-session"),
   credentials = require("../credentials"),
-  mongoose = require("mongoose");
+  jwt = require("jsonwebtoken");
 const User = require("../models/user"),
   QuizQuestion = require("../models/QuizQuestion"),
   Module = require("../models/Module");
@@ -15,7 +14,14 @@ router.use(cookieParser(credentials.cookieSecret));
 router.use(session());
 
 router.get("/home", (req, res) => {
+  // jwt.verify(req.token, "secretkey", (err, authData) => {
+  //   if (err) {
+  //     console.log(err);
+  //     res.sendStatus(403);
+  //   } else {
   Module.find().then(modules => res.json(modules));
+  // }
+  // });
 });
 
 router.get("/module/:moduleCode", (req, res) => {
@@ -60,13 +66,69 @@ router.post("/handleregister", (req, res) => {
 router.post("/processlogin", (req, res) => {
   User.findOne({ email: req.body.email }, (err, user) => {
     if (err) console.log(`Error finding user: ${user} Error: ${err}`);
-    else if (!user) res.json({ success: false, errMassage: "User not exist" });
-    else if (user.password === req.body.password) {
-      req.session.user = user;
-      if (user.type === "admin") res.json({ success: true, role: "admin" });
-      // if (user.type === "admin") res.json(303, "admin");
-      else res.json({ success: true, role: "student" });
-    } else res.json({ success: false, errMassage: "Password not correct" });
+    else if (!user) {
+      res.json({ success: false, errMassage: "User not exist" });
+      console.log("User not exist");
+    } else if (user.password === req.body.password) {
+      console.log(user);
+      jwt.sign({ user }, "secretkey", { expiresIn: "600s" }, (err, token) => {
+        res.json(token);
+      });
+    } else {
+      res.json({ success: false, errMassage: "Password not correct" });
+    }
+    // req.session.user = user;
+    //   if (user.type === "admin") res.json({ success: true, role: "admin" });
+    //   // if (user.type === "admin") res.json(303, "admin");
+    //   else res.json({ success: true, role: "student" });
+    // } else res.json({ success: false, errMassage: "Password not correct" });
+  });
+});
+
+router.post("/gettoken", (req, res) => {
+  const user = {
+    id: 1,
+    username: "brad",
+    email: "brad@gmail.com"
+  };
+  jwt.sign({ user }, "secretkey", { expiresIn: "600s" }, (err, token) => {
+    res.json(token);
+  });
+});
+
+function verifyToken(req, res, next) {
+  const bearerHeader = req.headers["authorization"];
+  if (typeof bearerHeader !== "undefined") {
+    const bearer = bearerHeader.split(" ");
+    const bearerToken = bearer[1];
+    req.token = bearerToken;
+    next();
+  } else {
+    res.sendStatus(403);
+  }
+}
+
+router.get("/api/posts", verifyToken, (req, res) => {
+  jwt.verify(req.token, "secretkey", (err, authData) => {
+    if (err) {
+      res.sendStatus(403);
+    } else {
+      res.json({
+        message: "Post created...",
+        authData
+      });
+    }
+  });
+});
+
+router.get("/adminrestricted", verifyToken, (req, res) => {
+  jwt.verify(req.token, "secretkey", (err, authData) => {
+    if (err) {
+      console.log(err);
+      res.sendStatus(403);
+    } else {
+      res.json({ success: true });
+    }
   });
 });
 
