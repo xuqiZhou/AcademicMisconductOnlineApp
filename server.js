@@ -6,6 +6,8 @@ const seedDB = require("./models/seed"),
   Question = require("./models/question"),
   credentials = require("./credentials"),
   db = require("./config/keys").mongoURI;
+const md5 = require("md5");
+
 // Routes
 const mainRoutes = require("./routes");
 const studentRoutes = require("./routes/students");
@@ -27,6 +29,7 @@ mongoose
     { useNewUrlParser: true }
   )
   .then(() => {
+    console.log(md5("ddd"));
     console.log("MongoDB Connected...");
   })
   .catch(err => console.log(err));

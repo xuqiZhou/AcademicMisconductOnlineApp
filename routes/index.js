@@ -2,8 +2,8 @@ const express = require("express"),
   router = express.Router(),
   cookieParser = require("cookie-parser"),
   bodyParser = require("body-parser"),
-  // session = require("express-session"),
-  credentials = require("../credentials");
+  jwt = require("jsonwebtoken");
+credentials = require("../credentials");
 const User = require("../models/user"),
   QuizQuestion = require("../models/QuizQuestion"),
   Module = require("../models/Module");
@@ -54,5 +54,53 @@ router.post("/handleregister", (req, res) => {
     }
   });
 });
+
+router.post("/getToken", (req, res) => {
+  console.log("email: " + req.body.email);
+  console.log(req.body.password);
+  User.findOne({ email: req.body.email }, (err, user) => {
+    if (err) console.log(`Error finding user: ${user} Error: ${user}`);
+    else if (!user) res.json({ success: false, errMassage: "User Not Exist" });
+    else {
+      console.log(user);
+      if (user.password === req.body.password) {
+        console.log({ success: "success" });
+
+        jwt.sign(
+          { user, type: "admin" },
+          "secretkey",
+          { expiresIn: "3600s" },
+          (err, token) => {
+            res.status(200).json({ success: true, token });
+          }
+        );
+      } else {
+        res.json({ success: false, errMassage: "Password Not Correct" });
+      }
+    }
+  });
+});
+
+router.get("/getAuth", verifyToken, (req, res) => {
+  jwt.verify(req.token, "secretkey", (err, authData) => {
+    if (err) {
+      res.sendStatus(403);
+    } else {
+      res.json({ success: true });
+    }
+  });
+});
+
+function verifyToken(req, res, next) {
+  const bearerHeader = req.headers["authorization"];
+  if (typeof bearerHeader !== "undefined") {
+    const bearer = bearerHeader.split(" ");
+    const bearerToken = bearer[1];
+    req.token = bearerToken;
+    next();
+  } else {
+    res.sendStatus(403);
+  }
+}
 
 module.exports = router;

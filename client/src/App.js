@@ -13,6 +13,7 @@ import CreateModule from "./components/CreateModule";
 import StudentScore from "./components/StudentScore";
 import ForgetPassword from "./components/ForgetPassword";
 import Login from "./components/Login";
+import AuthComponent from "./components/AuthComponent";
 
 class App extends Component {
   state = {};
@@ -21,9 +22,13 @@ class App extends Component {
     return (
       <Router>
         <div>
-          <Route exact path="/" component={Login} />
-          <Route exact path="/forgetpassword" component={ForgetPassword} />
-          <Route exact path="/register" component={Register} />
+          <Route exact strict path="/" render={() => <Login />} />
+          <Route
+            exact
+            path="/forgetpassword"
+            render={() => <ForgetPassword />}
+          />
+          <Route exact path="/register" render={() => <Register />} />
           <Route exact path="/home" render={() => <Home type="guest" />} />
           <Route
             exact
@@ -33,17 +38,21 @@ class App extends Component {
             )}
           />
           <Route
+            exact
             path="/module/:moduleCode/quiz"
             render={({ match }) => (
               <QuizPage type="guest" moduleCode={match.params.moduleCode} />
             )}
           />
           {/* student routes */}
-          <Route
-            exact
-            path="/student/home"
-            render={() => <Home type="student" />}
-          />
+          <AuthComponent>
+            <Route
+              exact
+              strict
+              path="/student/home"
+              render={() => <Home type="student" />}
+            />
+          </AuthComponent>
           <Route
             exact
             path="/student/module/:moduleName"
@@ -52,6 +61,7 @@ class App extends Component {
             )}
           />
           <Route
+            exact
             path="/student/module/:moduleCode/quiz"
             render={({ match }) => (
               <QuizPage type="student" moduleCode={match.params.moduleCode} />
@@ -71,6 +81,7 @@ class App extends Component {
             )}
           />
           <Route
+            exact
             path="/admin/module/:moduleCode/quiz"
             render={({ match }) => (
               <QuizPage type="admin" moduleCode={match.params.moduleCode} />
@@ -89,6 +100,7 @@ class App extends Component {
             )}
           />
           <Route
+            exact
             path="/admin/edit/editmodule/quiz/:_id"
             render={({ match }) => (
               <EditQuiz type="admin" _id={match.params._id} />

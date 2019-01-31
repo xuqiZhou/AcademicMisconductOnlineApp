@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Container, Button } from "reactstrap";
 import { Label, Input, FormGroup } from "reactstrap";
-import { Link, Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 import md5 from "md5";
 import axios from "axios";
 import UWImage from "../UW_left-stack_white.png";
@@ -18,44 +18,36 @@ class EntryPage extends Component {
     };
   }
 
-  onLogin() {
-    // axios
-    //   .post("/processlogin", {
-    //     email: this.state.email,
-    //     password: this.state.password
-    //   })
-    //   .then(res => {
-    //     localStorage.setItem("cool-jwt", res.data);
-    // this.props.history.push("/forgetpassword");
-    //   });
-
+  onLogin(e) {
+    e.preventDefault();
     axios
-      .post("processlogin", {
+      .post("/getToken", {
         email: this.state.email,
         password: this.state.password
       })
       .then(res => {
-        localStorage.setItem("cool-jwt", res.data);
-        this.props.history.push("/home");
-        // if (res.data.role === "student") {
-        //   this.setState({ role: "student", redirect: true });
-        // } else if (res.data.role === "admin") {
-        //   this.setState({ role: "admin", redirect: true });
-        // }
-      });
+        console.log(res.data);
+        localStorage.setItem("cool-jwt", res.data.token);
+        // this.props.history.push("/");
+      })
+      .catch(() =>
+        this.setState({
+          error: true
+        })
+      );
   }
 
-  renderRedirect = () => {
-    if (this.state.redirect) {
-      if (this.state.role === "admin") return <Redirect to={"/admin/home"} />;
-      else return <Redirect to={"/student/home"} />;
-    }
-  };
+  // renderRedirect = () => {
+  //   if (this.state.redirect) {
+  //     if (this.state.role === "admin") return <Redirect to={"/admin/home"} />;
+  //     else return <Redirect to={"/student/home"} />;
+  //   }
+  // };
 
   render() {
     return (
       <React.Fragment>
-        {this.renderRedirect()}
+        {/* {this.renderRedirect()} */}
         <nav
           style={{ borderRadius: 0, position: "fixed !important" }}
           className="navbar navbar-expand-lg bg-dark mb-0"
