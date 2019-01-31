@@ -28,7 +28,8 @@ class EntryPage extends Component {
       .then(res => {
         console.log(res.data);
         localStorage.setItem("cool-jwt", res.data.token);
-        // this.props.history.push("/");
+        localStorage.setItem("role", res.data.type);
+        this.props.history.push("/student/home");
       })
       .catch(() =>
         this.setState({

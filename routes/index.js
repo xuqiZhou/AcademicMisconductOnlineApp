@@ -64,16 +64,18 @@ router.post("/getToken", (req, res) => {
     else {
       console.log(user);
       if (user.password === req.body.password) {
-        console.log({ success: "success" });
-
-        jwt.sign(
-          { user, type: "admin" },
-          "secretkey",
-          { expiresIn: "3600s" },
-          (err, token) => {
-            res.status(200).json({ success: true, token });
-          }
-        );
+        let type = null;
+        if (user.type === "admin") {
+          console.log("IS ADMIN");
+          type = "admin";
+        } else {
+          console.log("IS ADMIN");
+          type = "student";
+        }
+        jwt.sign({ user, type }, type, { expiresIn: "3600s" }, (err, token) => {
+          console.log("type " + type);
+          res.status(200).json({ success: true, token, type: type });
+        });
       } else {
         res.json({ success: false, errMassage: "Password Not Correct" });
       }
@@ -82,7 +84,9 @@ router.post("/getToken", (req, res) => {
 });
 
 router.get("/getAuth", verifyToken, (req, res) => {
-  jwt.verify(req.token, "secretkey", (err, authData) => {
+  console.log(`req.userRole: ${req.userRole}`);
+  //depend on the role, change the secretkey.
+  jwt.verify(req.token, req.userRole, (err, authData) => {
     if (err) {
       res.sendStatus(403);
     } else {
@@ -93,10 +97,12 @@ router.get("/getAuth", verifyToken, (req, res) => {
 
 function verifyToken(req, res, next) {
   const bearerHeader = req.headers["authorization"];
+  const userRole = req.headers["role"];
   if (typeof bearerHeader !== "undefined") {
     const bearer = bearerHeader.split(" ");
     const bearerToken = bearer[1];
     req.token = bearerToken;
+    req.userRole = userRole;
     next();
   } else {
     res.sendStatus(403);

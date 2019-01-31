@@ -45,72 +45,74 @@ class App extends Component {
             )}
           />
           {/* student routes */}
-          <AuthComponent>
+          <AuthComponent userType="student">
             <Route
               exact
               strict
               path="/student/home"
               render={() => <Home type="student" />}
             />
+            <Route
+              exact
+              path="/student/module/:moduleName"
+              render={({ match }) => (
+                <Module type="student" moduleCode={match.params.moduleName} />
+              )}
+            />
+            <Route
+              exact
+              path="/student/module/:moduleCode/quiz"
+              render={({ match }) => (
+                <QuizPage type="student" moduleCode={match.params.moduleCode} />
+              )}
+            />
           </AuthComponent>
-          <Route
-            exact
-            path="/student/module/:moduleName"
-            render={({ match }) => (
-              <Module type="student" moduleCode={match.params.moduleName} />
-            )}
-          />
-          <Route
-            exact
-            path="/student/module/:moduleCode/quiz"
-            render={({ match }) => (
-              <QuizPage type="student" moduleCode={match.params.moduleCode} />
-            )}
-          />
           {/* admin routes */}
-          <Route
-            exact
-            path="/admin/home"
-            render={() => <Home type="admin" />}
-          />
-          <Route
-            exact
-            path="/admin/module/:moduleName"
-            render={({ match }) => (
-              <Module type="admin" moduleCode={match.params.moduleName} />
-            )}
-          />
-          <Route
-            exact
-            path="/admin/module/:moduleCode/quiz"
-            render={({ match }) => (
-              <QuizPage type="admin" moduleCode={match.params.moduleCode} />
-            )}
-          />
-          <Route
-            exact
-            path="/admin/edit"
-            render={({ match }) => <EditPage type="admin" />}
-          />
-          <Route
-            exact
-            path="/admin/edit/editmodule/:_id"
-            render={({ match }) => (
-              <CreateModule type="admin" _id={match.params._id} />
-            )}
-          />
-          <Route
-            exact
-            path="/admin/edit/editmodule/quiz/:_id"
-            render={({ match }) => (
-              <EditQuiz type="admin" _id={match.params._id} />
-            )}
-          />
-          <Route
-            exact
-            path="/admin/studentscore"
-            render={({ match }) => <StudentScore type="admin" />}
-          />
+          <AuthComponent userType="admin">
+            <Route
+              exact
+              path="/admin/home"
+              render={() => <Home type="admin" />}
+            />
+            <Route
+              exact
+              path="/admin/module/:moduleName"
+              render={({ match }) => (
+                <Module type="admin" moduleCode={match.params.moduleName} />
+              )}
+            />
+            <Route
+              exact
+              path="/admin/module/:moduleCode/quiz"
+              render={({ match }) => (
+                <QuizPage type="admin" moduleCode={match.params.moduleCode} />
+              )}
+            />
+            <Route
+              exact
+              path="/admin/edit"
+              render={({ match }) => <EditPage type="admin" />}
+            />
+            <Route
+              exact
+              path="/admin/edit/editmodule/:_id"
+              render={({ match }) => (
+                <CreateModule type="admin" _id={match.params._id} />
+              )}
+            />
+            <Route
+              exact
+              path="/admin/edit/editmodule/quiz/:_id"
+              render={({ match }) => (
+                <EditQuiz type="admin" _id={match.params._id} />
+              )}
+            />
+            <Route
+              exact
+              path="/admin/studentscore"
+              render={({ match }) => <StudentScore type="admin" />}
+            />
+          </AuthComponent>
         </div>
       </Router>
     );

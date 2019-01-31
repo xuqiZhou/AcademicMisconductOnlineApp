@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { withRouter } from "react-router-dom";
-import { getJwt } from "../helpers";
+import { getJwt } from "../helpers/jwt";
 
 class AuthComponent extends Component {
   constructor(props) {
@@ -13,6 +13,7 @@ class AuthComponent extends Component {
 
   componentDidMount() {
     this.getUser();
+    console.log(localStorage.getItem("role"));
   }
 
   getUser() {
@@ -26,7 +27,9 @@ class AuthComponent extends Component {
     }
 
     axios
-      .get("/getAuth", { headers: { Authorization: getJwt() } })
+      .get("/getAuth", {
+        headers: { Authorization: getJwt(), role: this.props.userType }
+      })
       .then(res => {
         this.setState({
           user: res.data
@@ -37,7 +40,8 @@ class AuthComponent extends Component {
   render() {
     const { user } = this.state;
     if (user === undefined) {
-      return <div>Not Authorizated</div>;
+      // return <div>Not Authorizated</div>;
+      return <div />;
     }
 
     if (user === null) {

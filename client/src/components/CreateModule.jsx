@@ -9,7 +9,7 @@ class CreateModule extends Component {
   render() {
     return (
       <React.Fragment>
-        <Navbar role={this.props.role} />
+        <Navbar role={this.props.type} />
         <Editor _id={this.props._id} />
         <Footer />
       </React.Fragment>
