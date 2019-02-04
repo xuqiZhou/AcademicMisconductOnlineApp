@@ -22,11 +22,7 @@ class QuizQuestions extends Component {
   componentDidMount(id) {
     fetch(`/admin/edit/editmodule/quiz/question/${id}`)
       .then(res => res.json())
-      .then(q =>
-        this.setState({ question: q.question, options: q.options }, () => {
-          console.log(this.state);
-        })
-      );
+      .then(q => this.setState({ question: q.question, options: q.options }));
   }
 
   hideQuestionPanel() {
@@ -37,16 +33,12 @@ class QuizQuestions extends Component {
     const id = e.target.value;
     this.setState({ questionPanelHide: false });
     this.componentDidMount(id);
-    console.log("Editing... " + id);
   }
 
   deleteQuestion() {
-    console.log(this.props.question._id);
-    axios
-      .delete(`/admin/edit/editmodule/quiz/delete/${this.props.question._id}`)
-      .then(res => {
-        console.log(res.data);
-      });
+    axios.delete(
+      `/admin/edit/editmodule/quiz/delete/${this.props.question._id}`
+    );
     this.props.refreshPage();
   }
 
@@ -98,7 +90,6 @@ class QuizQuestions extends Component {
             const options = this.state.options;
             options[index] = e.target.value;
             this.setState({ options });
-            console.log(this.state.options);
           }}
         />
       </React.Fragment>
@@ -151,7 +142,6 @@ class QuizQuestions extends Component {
                 name="text"
                 onChange={e => {
                   this.setState({ question: e.target.value });
-                  console.log(this.state.question);
                 }}
               />
             </FormGroup>

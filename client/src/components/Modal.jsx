@@ -55,7 +55,10 @@ class MyModal extends Component {
           </Modal.Header>
           <Modal.Body className="text-center">
             {this.getModal(this.props.userStatus).body.map(link => (
-              <React.Fragment key={uuid()}>{link}</React.Fragment>
+              <React.Fragment key={uuid()}>
+                {link}
+                <hr style={{ width: "70%" }} />
+              </React.Fragment>
             ))}
           </Modal.Body>
           <Modal.Footer className="mx-auto">
@@ -72,14 +75,17 @@ class MyModal extends Component {
         type: "Admin Settings",
         title: "Settings",
         // body: null,
-        body: [<Link to="/admin/studentscore">Student Score</Link>],
+        body: [
+          <Link to="/admin/studentscore">Student Score</Link>,
+          <Link to="/changepassword">Change Password</Link>
+        ],
         footer: null
       };
     } else if (loginStatus.toUpperCase() === "STUDENT") {
       return {
         type: "Studetns",
         title: "Student Settings",
-        body: ["More Settings"],
+        body: [<Link to="/changepassword">Change Password</Link>],
         footer: null
       };
     } else {

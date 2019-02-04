@@ -23,11 +23,10 @@ app.use(cookieParser(credentials.cookieSecret));
 app.set("port", process.env.PORT || 5000);
 app.use(express.static(__dirname + "/public"));
 
+mongoose.set("useFindAndModify", false);
+
 mongoose
-  .connect(
-    db,
-    { useNewUrlParser: true }
-  )
+  .connect(db, { useNewUrlParser: true })
   .then(() => {
     console.log(md5("ddd"));
     console.log("MongoDB Connected...");

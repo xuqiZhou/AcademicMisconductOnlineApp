@@ -17,6 +17,9 @@ const userSchema = mongoose.Schema({
   answer: {
     type: Array,
     required: false
+  },
+  lastSubmitedDate: {
+    type: Date
   }
 });
 

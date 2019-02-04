@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Container, Button } from "reactstrap";
 import { Label, Input, FormGroup } from "reactstrap";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import md5 from "md5";
 import axios from "axios";
 import UWImage from "../UW_left-stack_white.png";
@@ -13,8 +13,8 @@ class EntryPage extends Component {
     this.state = {
       email: "",
       password: "",
-      role: ""
-      // redirect: false
+      role: "",
+      redirect: false
     };
   }
 
@@ -27,9 +27,11 @@ class EntryPage extends Component {
       })
       .then(res => {
         console.log(res.data);
+
         localStorage.setItem("cool-jwt", res.data.token);
         localStorage.setItem("role", res.data.type);
-        this.props.history.push("/student/home");
+        localStorage.setItem("userEmail", res.data.email);
+        this.setState({ role: res.data.type, redirect: true });
       })
       .catch(() =>
         this.setState({
@@ -38,17 +40,17 @@ class EntryPage extends Component {
       );
   }
 
-  // renderRedirect = () => {
-  //   if (this.state.redirect) {
-  //     if (this.state.role === "admin") return <Redirect to={"/admin/home"} />;
-  //     else return <Redirect to={"/student/home"} />;
-  //   }
-  // };
+  renderRedirect = () => {
+    if (this.state.redirect) {
+      if (this.state.role === "admin") return <Redirect to={"/admin/home"} />;
+      else return <Redirect to={"/student/home"} />;
+    }
+  };
 
   render() {
     return (
       <React.Fragment>
-        {/* {this.renderRedirect()} */}
+        {this.renderRedirect()}
         <nav
           style={{ borderRadius: 0, position: "fixed !important" }}
           className="navbar navbar-expand-lg bg-dark mb-0"

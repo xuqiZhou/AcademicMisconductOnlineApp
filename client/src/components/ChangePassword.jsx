@@ -1,7 +1,6 @@
 import React, { Component } from "react";
-import { Redirect } from "react-router-dom";
 import md5 from "md5";
-import axios from "axios";
+
 import {
   Container,
   Button,
@@ -13,22 +12,18 @@ import {
 
 import UWImage from "../UW_left-stack_white.png";
 
-class Register extends Component {
+class ForgetPassword extends Component {
   constructor() {
     super();
     this.validatePassword = this.validatePassword.bind(this);
     this.checkPassword = this.checkPassword.bind(this);
-    this.register = this.register.bind(this);
     this.state = {
       email: "",
+      oldPassword: "",
       password: "",
       confPassword: "",
-      strongPassword: true,
       invalid: false,
-      emailInvalid: false,
-      redirect: false,
-      registerSucceed: false,
-      webmail: true
+      strongPassword: true
     };
   }
 
@@ -53,46 +48,11 @@ class Register extends Component {
     } else this.setState({ invalid: false });
   }
 
-  register(e) {
-    e.preventDefault();
-    if (
-      this.state.email.length <= 1 ||
-      this.state.password.length <= 1 ||
-      this.state.invalid
-    ) {
-    } else if (
-      this.state.email.substring(this.state.email.length - 20).toUpperCase() !==
-      "WEBMAIL.UWINNIPEG.CA"
-    ) {
-      this.setState({ webmail: false });
-    } else {
-      const newUser = {
-        email: this.state.email,
-        password: this.state.password
-      };
-      axios.post("/handleregister", newUser).then(res => {
-        if (res.data.success === true) {
-          setTimeout(() => {
-            this.setState({ redirect: true });
-          }, 1000);
-          this.setState({ registerSucceed: true });
-        } else {
-          this.setState({ emailInvalid: true });
-        }
-      });
-    }
-  }
-
-  renderRedirect = () => {
-    if (this.state.redirect) {
-      return <Redirect to={"/"} />;
-    }
-  };
+  reset() {}
 
   render() {
     return (
       <React.Fragment>
-        {this.renderRedirect()}
         <nav
           style={{ borderRadius: 0, position: "fixed !important" }}
           className="navbar navbar-expand-lg bg-dark mb-0"
@@ -106,11 +66,7 @@ class Register extends Component {
             />
           </a>
         </nav>
-        <Container
-          hidden={this.state.registerSucceed}
-          className="text-center"
-          style={{ marginTop: "20rem" }}
-        >
+        <Container className="text-center" style={{ marginTop: "24rem" }}>
           <div className="row">
             <div className="col-none col-md-3" />
             <div className="col col-md-6">
@@ -120,6 +76,7 @@ class Register extends Component {
                   <Input
                     placeholder="username@webmail.uwinnipeg.ca"
                     type="email"
+                    value={localStorage.getItem("userEmail")}
                     invalid={this.state.emailInvalid}
                     onChange={e => {
                       this.setState({ email: e.target.value });
@@ -132,9 +89,20 @@ class Register extends Component {
                   </FormFeedback>
                 </FormGroup>
                 <FormGroup>
-                  <Label>Password</Label>
+                  <Label>Please Enter Your Old Password </Label>
                   <Input
-                    placeholder="Enter your Password"
+                    placeholder="Old Password"
+                    type="password"
+                    onChange={e => {
+                      this.setState({ oldPassword: md5(e.target.value) });
+                    }}
+                  />
+                  <FormFeedback />
+                </FormGroup>
+                <FormGroup>
+                  <Label>Please Enter Your New Password </Label>
+                  <Input
+                    placeholder="New Password"
                     type="password"
                     invalid={!this.state.strongPassword}
                     onChange={this.checkPassword}
@@ -145,9 +113,9 @@ class Register extends Component {
                   </FormFeedback>
                 </FormGroup>
                 <FormGroup>
-                  <Label>Confirm Password</Label>
+                  <Label>Confrim New Password </Label>
                   <Input
-                    placeholder="Confirm your Password"
+                    placeholder="New Password"
                     type="password"
                     invalid={this.state.invalid}
                     onChange={this.validatePassword}
@@ -158,9 +126,9 @@ class Register extends Component {
                   className="my-5 text-white"
                   color="dark"
                   block
-                  onClick={this.register}
+                  onClick={this.reset}
                 >
-                  Register
+                  Reset
                 </Button>
               </form>
             </div>
@@ -172,8 +140,4 @@ class Register extends Component {
   }
 }
 
-export default Register;
-
-// 8c2d68e104affb6a1cba0fb4bd0faabe
-
-// admin@webmail.uwinnipeg.ca
+export default ForgetPassword;

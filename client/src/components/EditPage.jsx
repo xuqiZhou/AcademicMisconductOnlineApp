@@ -65,7 +65,6 @@ class EditPage extends Component {
   }
 
   deleteModule(e) {
-    console.log(e.target.value);
     const moduleId = e.target.value;
     axios.delete(`/admin/edit/delete/${moduleId}`);
   }
@@ -133,11 +132,7 @@ class EditPage extends Component {
           <div className="col h4">{module.moduleCode}</div>
           <div className="col">
             <div className="btn-group" role="group" aria-label="...">
-              <Button
-                onClick={() => console.log("inside link")}
-                color="secondary"
-                size="sm"
-              >
+              <Button color="secondary" size="sm">
                 <Link
                   style={{ textDecoration: "none" }}
                   className="text-white"
@@ -184,11 +179,7 @@ class EditPage extends Component {
           <div className="col h4">{module.moduleCode}</div>
           <div className="col">
             <div className="btn-group" role="group" aria-label="...">
-              <Button
-                onClick={() => console.log("inside link")}
-                color="secondary"
-                size="sm"
-              >
+              <Button color="secondary" size="sm">
                 <Link
                   style={{ textDecoration: "none" }}
                   className="text-white"
@@ -344,7 +335,7 @@ class EditPage extends Component {
                             disabled={this.state.disBtn}
                             onClick={this.setRedirect}
                           >
-                            Go Edit
+                            Edit
                           </Button>
                         </div>
                       </Col>

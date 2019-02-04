@@ -75,7 +75,6 @@ router.post("/editmodule/quiz/:_id", (req, res) => {
 
 // Update Existing Module
 router.post("/editmodule", (req, res) => {
-  console.log(req.body._id);
   const updatedModule = {
     moduleCode: req.body.moduleCode,
     title: req.body.title,
@@ -83,8 +82,6 @@ router.post("/editmodule", (req, res) => {
     public: req.body.public,
     lastModified: req.body.lastModified
   };
-  console.log(updatedModule);
-
   Module.findOneAndUpdate(
     { _id: req.body._id },
     updatedModule,
@@ -97,8 +94,6 @@ router.post("/editmodule", (req, res) => {
 
 // Change Module Status
 router.post("/editmodule/updatestatus", (req, res) => {
-  console.log("MODULEID: " + req.body._id);
-  console.log(req.body.public);
   const newStatus = {
     public: req.body.public
   };
@@ -110,12 +105,10 @@ router.post("/editmodule/updatestatus", (req, res) => {
 
 // Update Existing Quiz Question
 router.post("/editmodule/editquiz/:_id", (req, res) => {
-  console.log(req.body._id);
   const updatedQuestion = {
     question: req.body.question,
     options: req.body.options
   };
-  console.log(updatedQuestion);
   QuizQuestion.findOneAndUpdate(
     { _id: req.body._id },
     updatedQuestion,

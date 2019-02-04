@@ -13,6 +13,8 @@ import CreateModule from "./components/CreateModule";
 import StudentScore from "./components/StudentScore";
 import ForgetPassword from "./components/ForgetPassword";
 import Login from "./components/Login";
+import ChangePassword from "./components/ChangePassword";
+import QuizResult from "./components/QuizResultPage";
 import AuthComponent from "./components/AuthComponent";
 
 class App extends Component {
@@ -23,6 +25,11 @@ class App extends Component {
       <Router>
         <div>
           <Route exact strict path="/" render={() => <Login />} />
+          <Route
+            exact
+            path="/changepassword"
+            render={() => <ChangePassword />}
+          />
           <Route
             exact
             path="/forgetpassword"
@@ -42,6 +49,14 @@ class App extends Component {
             path="/module/:moduleCode/quiz"
             render={({ match }) => (
               <QuizPage type="guest" moduleCode={match.params.moduleCode} />
+            )}
+          />
+          <Route
+            exact
+            strict
+            path="/quizresult/:moduleId"
+            render={({ match }) => (
+              <QuizResult type="admin" moduleId={match.params.moduleId} />
             )}
           />
           {/* student routes */}
@@ -64,6 +79,14 @@ class App extends Component {
               path="/student/module/:moduleCode/quiz"
               render={({ match }) => (
                 <QuizPage type="student" moduleCode={match.params.moduleCode} />
+              )}
+            />
+            <Route
+              exact
+              strict
+              path="/student/quizresult/:moduleId"
+              render={({ match }) => (
+                <QuizResult type="student" moduleId={match.params.moduleId} />
               )}
             />
           </AuthComponent>
@@ -109,6 +132,14 @@ class App extends Component {
             />
             <Route
               exact
+              strict
+              path="/admin/quizresult/:moduleId"
+              render={({ match }) => (
+                <QuizResult type="admin" moduleId={match.params.moduleId} />
+              )}
+            />
+            <Route
+              exact
               path="/admin/studentscore"
               render={({ match }) => <StudentScore type="admin" />}
             />
@@ -122,52 +153,3 @@ class App extends Component {
 //   return <Module moduleName={match.params.moduleName} />;
 // }
 export default App;
-
-// class Application extends Component {
-//   constructor(props) {
-//     super(props);
-
-//     this.state = {};
-//   }
-
-//   componentDidMount() {
-//     const messages = client.service('messages');
-//     const users = client.service('users');
-
-//     // Try to authenticate with the JWT stored in localStorage
-//     client.authenticate().catch(() => this.setState({ login: null }));
-
-//     // On successfull login
-//     client.on('authenticated', login => {
-//       // Get all users and messages
-//       Promise.all([
-//         messages.find({
-//           query: {
-//             $sort: { createdAt: -1 },
-//             $limit: 25
-//           }
-//         }),
-//         users.find()
-//       ]).then( ([ messagePage, userPage ]) => {
-//         // We want the latest messages but in the reversed order
-//         const messages = messagePage.data.reverse();
-//         const users = userPage.data;
-
-//         // Once both return, update the state
-//         this.setState({ login, messages, users });
-//       });
-//     });
-// client.on('logout', () => this.setState({
-//   login: null,
-//   messages: null,
-//   users: null
-// }));
-// const socket = io('http://192.168.1.4:3030');
-// const client = feathers();
-
-// client.configure(feathers.socketio(socket));
-// client.configure(feathers.authentication({
-//   storage: window.localStorage
-// }));
-
-// export default client;

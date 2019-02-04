@@ -1,16 +1,11 @@
 const express = require("express"),
   router = express.Router(),
-  cookieParser = require("cookie-parser"),
   bodyParser = require("body-parser"),
   jwt = require("jsonwebtoken");
-credentials = require("../credentials");
-const User = require("../models/user"),
+const User = require("../models/User"),
   QuizQuestion = require("../models/QuizQuestion"),
   Module = require("../models/Module");
-
 router.use(bodyParser.urlencoded({ extended: false }));
-router.use(cookieParser(credentials.cookieSecret));
-// router.use(session());
 
 router.get("/home", (req, res) => {
   Module.find().then(modules => res.json(modules));
@@ -29,15 +24,12 @@ router.get("/module/quiz/:moduleId", (req, res) => {
     if (err) console.log(`Error finding module: ${module} Error: ${module}`);
     else if (!quizQuestions) res.json({ errMassage: "Module Not Exist" });
     else {
-      console.log(quizQuestions);
       res.json(quizQuestions);
     }
   });
 });
 
 router.post("/handleregister", (req, res) => {
-  console.log(req.body.email);
-  console.log(req.body.password);
   User.findOne({ email: req.body.email }, (err, user) => {
     if (err) {
       console.log(`Error finding user: ${user} Error: ${user}`);
@@ -45,7 +37,7 @@ router.post("/handleregister", (req, res) => {
       new User({
         email: req.body.email,
         password: req.body.password,
-        type: "Student"
+        type: "student"
       })
         .save()
         .then(res.json({ success: true }));
@@ -55,26 +47,41 @@ router.post("/handleregister", (req, res) => {
   });
 });
 
+router.post("/manageScore", (req, res) => {
+  let newAnswer = {
+    module: req.body.moduleCode,
+    score: req.body.score,
+    date: req.body.lastSubmitedDate
+  };
+  User.findOneAndUpdate(
+    { email: req.body.email },
+    {
+      $push: { answer: newAnswer },
+      lastSubmitedDate: req.body.lastSubmitedDate
+    },
+    (err, user) => {
+      if (err) console.log(`Error finding user: ${user} Error: ${user}`);
+      else if (!user)
+        res.json({ success: false, errMassage: "User Not Exist" });
+      else {
+        answer = user.answer;
+      }
+    }
+  );
+});
+
 router.post("/getToken", (req, res) => {
-  console.log("email: " + req.body.email);
-  console.log(req.body.password);
   User.findOne({ email: req.body.email }, (err, user) => {
     if (err) console.log(`Error finding user: ${user} Error: ${user}`);
     else if (!user) res.json({ success: false, errMassage: "User Not Exist" });
     else {
-      console.log(user);
       if (user.password === req.body.password) {
         let type = null;
-        if (user.type === "admin") {
-          console.log("IS ADMIN");
-          type = "admin";
-        } else {
-          console.log("IS ADMIN");
-          type = "student";
-        }
+        const email = req.body.email;
+        if (user.type === "admin") type = "admin";
+        else type = "student";
         jwt.sign({ user, type }, type, { expiresIn: "3600s" }, (err, token) => {
-          console.log("type " + type);
-          res.status(200).json({ success: true, token, type: type });
+          res.status(200).json({ success: true, token, type, email });
         });
       } else {
         res.json({ success: false, errMassage: "Password Not Correct" });
@@ -84,14 +91,9 @@ router.post("/getToken", (req, res) => {
 });
 
 router.get("/getAuth", verifyToken, (req, res) => {
-  console.log(`req.userRole: ${req.userRole}`);
-  //depend on the role, change the secretkey.
   jwt.verify(req.token, req.userRole, (err, authData) => {
-    if (err) {
-      res.sendStatus(403);
-    } else {
-      res.json({ success: true });
-    }
+    if (err) res.status(403).json({ success: false });
+    else res.json({ success: true });
   });
 });
 

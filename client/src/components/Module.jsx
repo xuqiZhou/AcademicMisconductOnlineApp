@@ -24,7 +24,6 @@ class ModulePage extends Component {
           body: module.body,
           moduleCode: module.moduleCode
         });
-        console.log(this.state);
       });
   }
 

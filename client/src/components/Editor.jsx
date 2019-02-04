@@ -45,7 +45,6 @@ class Editor extends Component {
 
   onChange(e) {
     this.setState({ body: e });
-    console.log(this.state.body);
   }
 
   onSave(e) {
@@ -58,9 +57,7 @@ class Editor extends Component {
       public: this.state.public,
       lastModified: Date.now()
     };
-    axios
-      .post("/admin/edit/editmodule", newModule)
-      .then(res => console.log(res.data));
+    axios.post("/admin/edit/editmodule", newModule);
     this.setState({ disBtn: true });
   }
 
