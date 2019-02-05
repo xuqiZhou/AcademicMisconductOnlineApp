@@ -1,63 +1,114 @@
 import React, { Component } from "react";
-import { Container } from "reactstrap";
+import { Container, Table } from "reactstrap";
+import uuid from "uuid";
 import Navbar from "./MyNavbar";
 import Footer from "./Footer";
 
 class StudentScore extends Component {
-  state = {};
+  constructor(props) {
+    super(props);
+    this.state = {
+      studentInfo: [],
+      moduleInfo: []
+    };
+  }
+  componentDidMount() {
+    fetch("/admin/edit/getinfo")
+      .then(res => res.json())
+      .then(info => {
+        let moduleCode = [];
+        info.modules.forEach(module => {
+          moduleCode.push(module.moduleCode);
+        });
+        this.setState({ studentInfo: info.students, moduleInfo: moduleCode });
+      });
+  }
+
+  getTableContent(student) {
+    const answers = student.answer;
+    let checkmarkArray = [];
+    const modules = this.state.moduleInfo;
+    for (let i = 0; i < modules.length; i++) {
+      const moduleCode = modules[i];
+      const answerForThisModule = answers.filter(
+        answer => answer.module === moduleCode
+      );
+      let latest = 0;
+      let latestScore = null;
+      for (let j = 0; j < answerForThisModule.length; j++) {
+        if (answerForThisModule[j].date > latest) {
+          latestScore = answerForThisModule[j].score;
+        }
+      }
+      if (latestScore === 100) checkmarkArray.push(true);
+      else if (latestScore === null) checkmarkArray.push(" ");
+      else checkmarkArray.push(false);
+    }
+    return checkmarkArray.map(result => (
+      <React.Fragment key={uuid()}>
+        <td
+          className={
+            result === true
+              ? "text-success text-right"
+              : "text-danger text-right"
+          }
+        >
+          {result === true ? (
+            <div>&#10004;</div>
+          ) : result === " " ? (
+            " "
+          ) : (
+            <div>&#x2718;</div>
+          )}
+        </td>
+      </React.Fragment>
+    ));
+  }
+
+  getDateTime(date) {
+    if (date === undefined) return " ";
+    else
+      return `${new Date(date).toDateString()} ${new Date(
+        date
+      ).toLocaleTimeString()}`;
+  }
+
   render() {
     return (
       <React.Fragment>
         <Navbar role={this.props.type} />
         <Container style={{ minHeight: "500px" }}>
           <h2 className="text-center my-5 py-5">Student Score</h2>
-          <table className="table table-striped table-hover table-responsive-sm my-5">
+          <Table responsive striped hover>
             <thead>
               <tr>
-                <th scope="col">Name</th>
                 <th scope="col">Webmail</th>
+                {this.state.moduleInfo.map(moduleCode => (
+                  <React.Fragment key={uuid()}>
+                    <th className="text-right" scope="col">
+                      {moduleCode}
+                    </th>
+                  </React.Fragment>
+                ))}
                 <th className="text-right" scope="col">
-                  Module I.
-                </th>
-                <th className="text-right" scope="col">
-                  Module II
-                </th>
-                <th className="text-right" scope="col">
-                  Module III
-                </th>
-                <th className="text-right" scope="col">
-                  Last Modified
+                  Last Submited
                 </th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <th scope="row">Bob</th>
-                <td>bob@webmail.uwinnipeg.ca</td>
-                {/* <!-- <td className="text-right">2019-01-02</td> --> */}
-                <td className="text-success text-right">&#10004;</td>
-                <td className="text-success text-right">&#10004;</td>
-                <td className="text-success text-right">&#10004;</td>
-                <td className="text-right">Jan 02 2019 13:52</td>
-              </tr>
-              <tr>
-                <th scope="row">James</th>
-                <td>james@webmail.uwinnipeg.ca</td>
-                <td className="text-success text-right">&#10004;</td>
-                <td className="text-danger text-right">&#x2718;</td>
-                <td className="text-success text-right">&#10004;</td>
-                <td className="text-right">Jan 02 2019 13:51</td>
-              </tr>
-              <tr>
-                <th scope="row">Mary</th>
-                <td>mary@webmail.uwinnipeg.ca</td>
-                <td className="text-right">&#10004;</td>
-                <td className="text-right">&#10004;</td>
-                <td className="text-right">&#x2718;</td>
-                <td className="text-right">Jan 02 2019 11:04</td>
-              </tr>
+              {this.state.studentInfo.map(student => (
+                <React.Fragment key={student._id}>
+                  <tr>
+                    <th scope="row">{student.email}</th>
+                    {this.getTableContent(student)}
+                    <td className="text-right">
+                      {this.getDateTime(student.lastSubmitedDate)}
+                    </td>
+                  </tr>
+                </React.Fragment>
+              ))}
             </tbody>
-          </table>
+          </Table>
         </Container>
         <Footer />
       </React.Fragment>

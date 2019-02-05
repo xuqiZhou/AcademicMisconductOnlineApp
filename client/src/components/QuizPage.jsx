@@ -7,8 +7,6 @@ import md5 from "md5";
 import Navbar from "./MyNavbar";
 import Footer from "./Footer";
 
-let CORRECTANSWERS = [];
-
 class QuizPage extends Component {
   constructor(props) {
     super(props);

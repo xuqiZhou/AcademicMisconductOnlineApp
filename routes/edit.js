@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Module = require("../models/Module");
+const User = require("../models/User");
 const QuizQuestion = require("../models/QuizQuestion");
 
 // Get all modules
@@ -40,6 +41,46 @@ router.get("/editmodule/quiz/question/:_id", (req, res) => {
       console.log(`Error finding question: ${question} Error: ${question}`);
     else if (!question) res.json({ errMassage: "Question not found" });
     else res.json(question);
+  });
+});
+
+// Get info for studentScore page
+router.get("/getinfo", (req, res) => {
+  let info = {
+    modules: null,
+    students: null
+  };
+  const getStudent = () => {
+    return new Promise((resolve, reject) => {
+      User.find({ type: "student" }, (err, students) => {
+        if (err)
+          console.log(`Error finding students: ${students} Error: ${err}`);
+        else if (!students)
+          res.json({ errMassage: "No Student in the database" });
+        else {
+          resolve(students);
+        }
+      });
+    });
+  };
+  const getModule = () => {
+    return new Promise((resolve, reject) => {
+      Module.find({ public: true }, (err, modules) => {
+        if (err) console.log(`Error finding modules: ${modules} Error: ${err}`);
+        else if (!modules)
+          res.json({ errMassage: "No Module in the database" });
+        else {
+          resolve(modules);
+        }
+      });
+    });
+  };
+  getModule().then(modules => {
+    info.modules = modules;
+    getStudent().then(students => {
+      info.students = students;
+      res.json(info);
+    });
   });
 });
 
