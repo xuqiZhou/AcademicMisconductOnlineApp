@@ -51,7 +51,10 @@ class MyModal extends Component {
   myGradeClicked() {
     axios
       .get("/getAuth", {
-        headers: { Authorization: getJwt(), role: this.props.userStatus }
+        headers: {
+          Authorization: `Bearer ${getJwt()}`,
+          role: this.props.userStatus
+        }
       })
       .then(res => {
         this.setState({

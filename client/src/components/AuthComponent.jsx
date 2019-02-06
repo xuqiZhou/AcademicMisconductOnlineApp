@@ -14,21 +14,23 @@ class AuthComponent extends Component {
 
   componentDidMount() {
     this.getUser();
-    this.setState({ redirect: true });
   }
 
   getUser() {
     const jwt = getJwt();
     if (!jwt) {
-      this.setState({ user: null });
+      this.setState({ redirect: true });
       return;
     }
     axios
       .get("/getAuth", {
-        headers: { Authorization: getJwt(), role: this.props.userType }
+        headers: {
+          Authorization: `Bearer ${getJwt()}`,
+          role: this.props.userType
+        }
       })
       .then(res => {
-        this.setState({ user: res.data });
+        this.setState({ user: res.data.authData.user });
       });
   }
 
@@ -37,13 +39,9 @@ class AuthComponent extends Component {
   };
 
   render() {
-    const { user } = this.state;
-    if (user === undefined)
-      // return <div>Not Authorizated</div>;
-      // return <div>{this.renderRedirect()}</div>;
-      return <div />;
+    if (this.state.user === undefined)
+      return <div>{this.renderRedirect()}</div>;
 
-    if (user === null) this.props.history.push("/");
     return this.props.children;
   }
 }
