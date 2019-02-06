@@ -2,15 +2,10 @@ const express = require("express"),
   bodyParser = require("body-parser"),
   mongoose = require("mongoose"),
   db = require("./config/keys").mongoURI;
-
 // Routes
 const mainRoutes = require("./routes");
 const edit = require("./routes/edit");
 const app = express();
-// const studentRoutes = require("./routes/students");
-// const adminRoutes = require("./routes/admin");
-// const cookieParser = require("cookie-parser"),
-// app.use(cookieParser(credentials.cookieSecret));
 
 app.use(bodyParser.json());
 app.set("port", process.env.PORT || 5000);
@@ -31,9 +26,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// app.use("/student", studentRoutes); //using student.js to handle all pages that a student can access
-// app.use("/admin", adminRoutes); //Same idea as student.js
-app.use(mainRoutes); //using index.js as an entry point for all types of users (guest, student and admin)
+app.use(mainRoutes);
 app.use("/admin/edit", edit);
 
 app.use(function(req, res) {
