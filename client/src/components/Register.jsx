@@ -64,7 +64,7 @@ class Register extends Component {
       this.state.email.substring(this.state.email.length - 20).toUpperCase() !==
       "WEBMAIL.UWINNIPEG.CA"
     ) {
-      this.setState({ webmail: false });
+      this.setState({ emailInvalid: true, webmail: false });
     } else {
       const newUser = {
         email: this.state.email,

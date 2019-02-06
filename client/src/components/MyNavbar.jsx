@@ -1,12 +1,11 @@
 /* jshint ignore: start */
 import React, { Component } from "react";
-import { NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import UWImage from "../UW_left-stack_white.png";
 import Modal from "./Modal";
 
 class MyNavbar extends Component {
   state = {
-    // Links
     student: [{ name: "Home", href: "/student/home" }],
     admin: [
       { name: "Edit", href: "/admin/edit" },
@@ -47,7 +46,13 @@ class MyNavbar extends Component {
           <ul className="navbar-nav ml-auto">
             {this.getLinks(this.props.role)}
           </ul>
-          <Modal userStatus={this.props.role} />
+          {this.props.role === "guest" ? (
+            <Link className="mx-5 text-white" to="/">
+              Login
+            </Link>
+          ) : (
+            <Modal userStatus={this.props.role} />
+          )}
         </nav>
       </React.Fragment>
     );
@@ -64,14 +69,13 @@ class MyNavbar extends Component {
     }
     return links.map(link => (
       <li key={link.href} className="nav-item">
-        <NavLink
-          exact
+        <Link
+          style={{ textDecoration: "none" }}
           to={link.href}
           className="text-white mr-3 ml-3"
-          activeStyle={{ color: "#868e96 !important" }}
         >
           {link.name}
-        </NavLink>
+        </Link>
       </li>
     ));
   }

@@ -15,6 +15,7 @@ import ForgetPassword from "./components/ForgetPassword";
 import Login from "./components/Login";
 import ChangePassword from "./components/ChangePassword";
 import QuizResult from "./components/QuizResultPage";
+import GradePage from "./components/GradePage";
 import AuthComponent from "./components/AuthComponent";
 
 class App extends Component {
@@ -56,7 +57,7 @@ class App extends Component {
             strict
             path="/quizresult/:moduleId"
             render={({ match }) => (
-              <QuizResult type="admin" moduleId={match.params.moduleId} />
+              <QuizResult type="guest" moduleId={match.params.moduleId} />
             )}
           />
           {/* student routes */}
@@ -87,6 +88,14 @@ class App extends Component {
               path="/student/quizresult/:moduleId"
               render={({ match }) => (
                 <QuizResult type="student" moduleId={match.params.moduleId} />
+              )}
+            />
+            <Route
+              exact
+              strict
+              path="/student/mygrades/:userId"
+              render={({ match }) => (
+                <GradePage type="student" userId={match.params.userId} />
               )}
             />
           </AuthComponent>

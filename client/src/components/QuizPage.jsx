@@ -64,7 +64,7 @@ class QuizPage extends Component {
         <Card className="text-dark bg-light">
           <CardBody className="card-body m-md-2 m-lg-4">
             {index + 1}.
-            <p className="h4 mx-md-5">
+            <p className="h4 mx-md-5 md-3">
               {question.question}
               <br />
             </p>
@@ -81,7 +81,7 @@ class QuizPage extends Component {
   getOptions(question, index) {
     let orderedArray = question.options;
     return orderedArray.map(option => (
-      <div className="form-check" key={uuid()}>
+      <div className="form-check my-3" key={uuid()}>
         <input
           className="form-check-input"
           type="radio"

@@ -1,25 +1,18 @@
 const express = require("express"),
   bodyParser = require("body-parser"),
-  cookieParser = require("cookie-parser"),
-  mongoose = require("mongoose");
-const seedDB = require("./models/seed"),
-  Question = require("./models/question"),
-  credentials = require("./credentials"),
+  mongoose = require("mongoose"),
   db = require("./config/keys").mongoURI;
-const md5 = require("md5");
 
 // Routes
 const mainRoutes = require("./routes");
-const studentRoutes = require("./routes/students");
-const adminRoutes = require("./routes/admin");
 const edit = require("./routes/edit");
-
 const app = express();
-
-seedDB.seed(Question);
+// const studentRoutes = require("./routes/students");
+// const adminRoutes = require("./routes/admin");
+// const cookieParser = require("cookie-parser"),
+// app.use(cookieParser(credentials.cookieSecret));
 
 app.use(bodyParser.json());
-app.use(cookieParser(credentials.cookieSecret));
 app.set("port", process.env.PORT || 5000);
 app.use(express.static(__dirname + "/public"));
 
@@ -28,7 +21,6 @@ mongoose.set("useFindAndModify", false);
 mongoose
   .connect(db, { useNewUrlParser: true })
   .then(() => {
-    console.log(md5("ddd"));
     console.log("MongoDB Connected...");
   })
   .catch(err => console.log(err));
@@ -39,9 +31,9 @@ app.use((req, res, next) => {
   next();
 });
 
+// app.use("/student", studentRoutes); //using student.js to handle all pages that a student can access
+// app.use("/admin", adminRoutes); //Same idea as student.js
 app.use(mainRoutes); //using index.js as an entry point for all types of users (guest, student and admin)
-app.use("/student", studentRoutes); //using student.js to handle all pages that a student can access
-app.use("/admin", adminRoutes); //Same idea as student.js
 app.use("/admin/edit", edit);
 
 app.use(function(req, res) {

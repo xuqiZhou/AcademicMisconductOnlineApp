@@ -126,18 +126,6 @@ class EntryPage extends Component {
             </div>
             <div className="col-none col-md-3" />
           </div>
-          <div>
-            Links below will be removed after authentication has been
-            implemented
-          </div>
-          <div className="text-center">
-            <Link to="/home">Guest</Link>
-            <br />
-            <Link to="/student/home">Student</Link>
-            <br />
-            <Link to="/admin/home">Admin</Link>
-            <br />
-          </div>
         </Container>
       </React.Fragment>
     );

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
+import { Redirect } from "react-router-dom";
+import axios from "axios";
 import md5 from "md5";
-
 import {
   Container,
   Button,
@@ -17,13 +18,17 @@ class ForgetPassword extends Component {
     super();
     this.validatePassword = this.validatePassword.bind(this);
     this.checkPassword = this.checkPassword.bind(this);
+    this.reset = this.reset.bind(this);
     this.state = {
-      email: "",
+      email: localStorage.getItem("userEmail"),
       oldPassword: "",
       password: "",
-      confPassword: "",
       invalid: false,
-      strongPassword: true
+      strongPassword: true,
+      wrongPassword: false,
+      userNotExist: false,
+      errMessage: "",
+      redirect: false
     };
   }
 
@@ -48,11 +53,39 @@ class ForgetPassword extends Component {
     } else this.setState({ invalid: false });
   }
 
-  reset() {}
+  reset(e) {
+    e.preventDefault();
+    const data = {
+      email: this.state.email,
+      oldPassword: this.state.oldPassword,
+      newPassword: this.state.password,
+      errMessage: ""
+    };
+    axios.post("/changepassword", data).then(res => {
+      if (res.data.success === false) {
+        const errMessage = res.data.errMessage;
+        if (errMessage === "Wrong Password")
+          this.setState({ errMessage, wrongPassword: true });
+        else if (errMessage === "User Not Exist")
+          this.setState({ errMessage, userNotExist: true });
+      } else {
+        this.setState({ redirect: true });
+      }
+    });
+  }
+
+  renderRedirect = () => {
+    const role = localStorage.getItem("role");
+    if (this.state.redirect) {
+      if (role === "student") return <Redirect to={"/student/home"} />;
+      else return <Redirect to={"/admin/home"} />;
+    }
+  };
 
   render() {
     return (
       <React.Fragment>
+        {this.renderRedirect()}
         <nav
           style={{ borderRadius: 0, position: "fixed !important" }}
           className="navbar navbar-expand-lg bg-dark mb-0"
@@ -76,28 +109,25 @@ class ForgetPassword extends Component {
                   <Input
                     placeholder="username@webmail.uwinnipeg.ca"
                     type="email"
-                    value={localStorage.getItem("userEmail")}
-                    invalid={this.state.emailInvalid}
+                    value={this.state.email}
+                    invalid={this.state.userNotExist === true}
                     onChange={e => {
                       this.setState({ email: e.target.value });
                     }}
                   />
-                  <FormFeedback>
-                    {this.state.webmail
-                      ? "The email address you have entered is already registered."
-                      : "Please use your Webmail address"}
-                  </FormFeedback>
+                  <FormFeedback>{this.state.errMessage} </FormFeedback>
                 </FormGroup>
                 <FormGroup>
                   <Label>Please Enter Your Old Password </Label>
                   <Input
                     placeholder="Old Password"
                     type="password"
+                    invalid={this.state.wrongPassword === true}
                     onChange={e => {
                       this.setState({ oldPassword: md5(e.target.value) });
                     }}
                   />
-                  <FormFeedback />
+                  <FormFeedback>{this.state.errMessage}</FormFeedback>
                 </FormGroup>
                 <FormGroup>
                   <Label>Please Enter Your New Password </Label>

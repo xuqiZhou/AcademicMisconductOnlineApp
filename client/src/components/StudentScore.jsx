@@ -54,11 +54,11 @@ class StudentScore extends Component {
           }
         >
           {result === true ? (
-            <div>&#10004;</div>
+            <span>&#10004;</span>
           ) : result === " " ? (
             " "
           ) : (
-            <div>&#x2718;</div>
+            <span>&#x2718;</span>
           )}
         </td>
       </React.Fragment>
@@ -77,12 +77,12 @@ class StudentScore extends Component {
     return (
       <React.Fragment>
         <Navbar role={this.props.type} />
-        <Container style={{ minHeight: "500px" }}>
+        <Container style={{ minHeight: "700px" }}>
           <h2 className="text-center my-5 py-5">Student Score</h2>
           <Table responsive striped hover>
             <thead>
               <tr>
-                <th scope="col">Webmail</th>
+                <th scope="col">Account</th>
                 {this.state.moduleInfo.map(moduleCode => (
                   <React.Fragment key={uuid()}>
                     <th className="text-right" scope="col">
@@ -96,17 +96,25 @@ class StudentScore extends Component {
               </tr>
             </thead>
             <tbody>
-              {this.state.studentInfo.map(student => (
-                <React.Fragment key={student._id}>
-                  <tr>
-                    <th scope="row">{student.email}</th>
-                    {this.getTableContent(student)}
-                    <td className="text-right">
-                      {this.getDateTime(student.lastSubmitedDate)}
-                    </td>
-                  </tr>
-                </React.Fragment>
-              ))}
+              {/* Sort acorrding to Date */}
+              {console.log(this.state.studentInfo)}
+              {this.state.studentInfo
+                .sort(function(a, b) {
+                  return (
+                    new Date(b.lastSubmitedDate) - new Date(a.lastSubmitedDate)
+                  );
+                })
+                .map(student => (
+                  <React.Fragment key={student._id}>
+                    <tr>
+                      <th scope="row">{student.email}</th>
+                      {this.getTableContent(student)}
+                      <td className="text-right">
+                        {this.getDateTime(student.lastSubmitedDate)}
+                      </td>
+                    </tr>
+                  </React.Fragment>
+                ))}
             </tbody>
           </Table>
         </Container>
