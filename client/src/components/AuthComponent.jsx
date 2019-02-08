@@ -26,7 +26,7 @@ class AuthComponent extends Component {
       .get("/getAuth", {
         headers: {
           Authorization: `Bearer ${getJwt()}`,
-          role: this.props.userType
+          role: localStorage.getItem("role")
         }
       })
       .then(res => {

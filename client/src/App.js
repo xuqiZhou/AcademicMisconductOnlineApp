@@ -1,6 +1,6 @@
 // /* jshint ignore:start */
 import React, { Component } from "react";
-import { BrowserRouter as Router, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
 import Route from "react-router-dom/Route";
 // App Components
 import Register from "./components/Register";
@@ -18,61 +18,23 @@ import QuizResult from "./components/QuizResultPage";
 import GradePage from "./components/GradePage";
 import AuthComponent from "./components/AuthComponent";
 
+const NoMatch = () => (
+  <div>
+    <Redirect to="/" />
+  </div>
+);
+
 class App extends Component {
   state = { role: localStorage.getItem("role") };
 
   LoginSuccess = () => {
-    console.log("Hello from app");
     this.setState({ role: localStorage.getItem("role") });
-    console.log(this.state);
   };
 
-  render() {
-    return (
-      <Router>
-        <Switch>
-          {console.log(this.state)}
-          <Route
-            exact
-            strict
-            path="/"
-            render={() => <Login loginSuccess={this.LoginSuccess} />}
-          />
-          <Route
-            exact
-            path="/changepassword"
-            render={() => <ChangePassword />}
-          />
-          <Route
-            exact
-            path="/forgetpassword"
-            render={() => <ForgetPassword />}
-          />
-          <Route exact path="/register" render={() => <Register />} />
-          <Route exact path="/home" render={() => <Home type="guest" />} />
-          <Route
-            exact
-            path="/module/:moduleName"
-            render={({ match }) => (
-              <Module type="guest" moduleCode={match.params.moduleName} />
-            )}
-          />
-          <Route
-            exact
-            path="/module/:moduleCode/quiz"
-            render={({ match }) => (
-              <QuizPage type="guest" moduleCode={match.params.moduleCode} />
-            )}
-          />
-          <Route
-            exact
-            strict
-            path="/quizresult/:moduleId"
-            render={({ match }) => (
-              <QuizResult type="guest" moduleId={match.params.moduleId} />
-            )}
-          />
-          {/* student routes */}
+  getRoutes() {
+    if (this.state.role === "student") {
+      return (
+        <React.Fragment>
           <AuthComponent userType={this.state.role}>
             <Switch>
               <Route
@@ -113,9 +75,17 @@ class App extends Component {
                 render={({ match }) => (
                   <GradePage type="student" userId={match.params.userId} />
                 )}
-              />
-              {/* admin routes */}
-
+              />{" "}
+              <Route component={NoMatch} />
+            </Switch>
+          </AuthComponent>
+        </React.Fragment>
+      );
+    } else if (this.state.role === "admin") {
+      return (
+        <React.Fragment>
+          <AuthComponent userType={this.state.role}>
+            <Switch>
               <Route
                 exact
                 path="/admin/home"
@@ -166,9 +136,61 @@ class App extends Component {
                 exact
                 path="/admin/studentscore"
                 render={({ match }) => <StudentScore type="admin" />}
-              />
+              />{" "}
+              <Route component={NoMatch} />
             </Switch>
           </AuthComponent>
+        </React.Fragment>
+      );
+    }
+  }
+
+  render() {
+    return (
+      <Router>
+        <Switch>
+          <Route
+            exact
+            strict
+            path="/"
+            render={() => <Login loginSuccess={this.LoginSuccess} />}
+          />
+          <Route
+            exact
+            path="/changepassword"
+            render={() => <ChangePassword />}
+          />
+          <Route
+            exact
+            path="/forgetpassword"
+            render={() => <ForgetPassword />}
+          />
+          <Route exact path="/register" render={() => <Register />} />
+          <Route exact path="/home" render={() => <Home type="guest" />} />
+          <Route
+            exact
+            path="/module/:moduleName"
+            render={({ match }) => (
+              <Module type="guest" moduleCode={match.params.moduleName} />
+            )}
+          />
+          <Route
+            exact
+            path="/module/:moduleCode/quiz"
+            render={({ match }) => (
+              <QuizPage type="guest" moduleCode={match.params.moduleCode} />
+            )}
+          />
+          <Route
+            exact
+            strict
+            path="/quizresult/:moduleId"
+            render={({ match }) => (
+              <QuizResult type="guest" moduleId={match.params.moduleId} />
+            )}
+          />
+          {this.getRoutes()}
+          <Route component={NoMatch} />
         </Switch>
       </Router>
     );
