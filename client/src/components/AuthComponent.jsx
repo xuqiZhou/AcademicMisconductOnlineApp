@@ -13,8 +13,6 @@ class AuthComponent extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props.userType);
-
     this.getUser();
   }
 

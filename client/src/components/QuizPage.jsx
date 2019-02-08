@@ -21,7 +21,6 @@ class QuizPage extends Component {
       answers: [],
       redirect: false,
       correctAnswer: [],
-      finished: false,
       hidden: true
     };
   }
@@ -108,33 +107,34 @@ class QuizPage extends Component {
     const lastSubmitedDate = Date.now();
     let score = 0;
     const answers = this.state.answers;
-    answers.forEach(answer => {
-      if (answer === null) this.setState({ finished: false });
-      else {
-        this.setState({ finished: true });
-      }
-    });
-    if (this.state.finished) {
-      answers.forEach(answer => {
-        if (this.state.correctAnswer.indexOf(md5(answer)) !== -1) score++;
-      });
-      if (localStorage.getItem("userEmail")) {
-        const newInfo = {
-          moduleCode: this.props.moduleCode,
-          email: localStorage.getItem("userEmail"),
-          score:
-            Math.round((score / this.state.correctAnswer.length) * 100 * 100) /
-            100,
-          lastSubmitedDate
-        };
-        axios.post("/manageScore", newInfo).then(res => console.log(res.data));
-      }
-      localStorage.setItem("studentAnswer", JSON.stringify(answers));
-      this.setState({ redirect: true });
-    } else {
+    if (answers.length !== this.state.correctAnswer.length) {
       this.setState({ hidden: false });
+      return;
+    } else {
+      for (let i = 0; i < answers.length; i++) {
+        if (answers[i] === undefined) {
+          this.setState({ hidden: false });
+          return;
+        }
+      }
     }
-    // axios.post("/handlequiz");
+
+    answers.forEach(answer => {
+      if (this.state.correctAnswer.indexOf(md5(answer)) !== -1) score++;
+    });
+    if (localStorage.getItem("userEmail")) {
+      const newInfo = {
+        moduleCode: this.props.moduleCode,
+        email: localStorage.getItem("userEmail"),
+        score:
+          Math.round((score / this.state.correctAnswer.length) * 100 * 100) /
+          100,
+        lastSubmitedDate
+      };
+      axios.post("/manageScore", newInfo).then(res => console.log(res.data));
+    }
+    localStorage.setItem("studentAnswer", JSON.stringify(answers));
+    this.setState({ redirect: true });
   }
 
   renderRedirect = () => {

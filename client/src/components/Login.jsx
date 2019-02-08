@@ -146,7 +146,7 @@ class EntryPage extends Component {
                 style={{ textDecoration: "none" }}
                 to="/forgetpassword"
               >
-                Forget Password
+                } Forget Password
               </Link>
             </div>
             <div className="col-none col-md-3" />
