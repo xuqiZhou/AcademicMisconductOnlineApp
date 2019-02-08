@@ -86,7 +86,7 @@ class EntryPage extends Component {
           </a>
         </nav>
         <Container className="text-center" style={{ marginTop: "18rem" }}>
-          <h1>Login/newest</h1>
+          <h1>Login</h1>
           <div className="row">
             <div className="col-none col-md-3" />
             <div className="col col-md-6">

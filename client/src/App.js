@@ -1,6 +1,6 @@
 // /* jshint ignore:start */
 import React, { Component } from "react";
-import { BrowserRouter as Router, Switch, Redirect } from "react-router-dom";
+import { BrowserRouter as Router, Switch } from "react-router-dom";
 import Route from "react-router-dom/Route";
 // App Components
 import Register from "./components/Register";
@@ -18,9 +18,21 @@ import QuizResult from "./components/QuizResultPage";
 import GradePage from "./components/GradePage";
 import AuthComponent from "./components/AuthComponent";
 
+function timeout() {
+  setTimeout(() => {
+    window.location = "http://localhost:3000";
+  }, 3000);
+}
+
 const NoMatch = () => (
-  <div>
-    <Redirect to="/" />
+  <div className="text-center my-5" style={{ minHeight: "400px" }}>
+    <h1 style={{ marginTop: "300px" }}>
+      404 Not Found
+      <br />
+      <br />
+      Going to Login Page.
+      {timeout()}
+    </h1>
   </div>
 );
 
@@ -136,7 +148,8 @@ class App extends Component {
                 exact
                 path="/admin/studentscore"
                 render={({ match }) => <StudentScore type="admin" />}
-              />{" "}
+              />
+              {/* <Route path="/student" component={wrongPath} /> */}
               <Route component={NoMatch} />
             </Switch>
           </AuthComponent>
