@@ -49,6 +49,8 @@ class MyModal extends Component {
   };
 
   myGradeClicked() {
+    console.log("clicked");
+
     axios
       .get("/getAuth", {
         headers: {

@@ -20,7 +20,9 @@ class QuizPage extends Component {
       moduleTitle: "",
       answers: [],
       redirect: false,
-      correctAnswer: []
+      correctAnswer: [],
+      finished: false,
+      hidden: true
     };
   }
 
@@ -40,7 +42,6 @@ class QuizPage extends Component {
     if (this.state.moduleFetched && this.state.questionNotFetched) {
       axios.get(`/module/quiz/${this.state.moduleId}`).then(res => {
         res.data.forEach(question => {
-          // CORRECTANSWERS.push(question.options[0]);
           this.state.correctAnswer.push(md5(question.options[0]));
         });
         const questions = res.data;
@@ -108,22 +109,31 @@ class QuizPage extends Component {
     let score = 0;
     const answers = this.state.answers;
     answers.forEach(answer => {
-      if (this.state.correctAnswer.indexOf(md5(answer)) !== -1) score++;
+      if (answer === null) this.setState({ finished: false });
+      else {
+        this.setState({ finished: true });
+      }
     });
-    if (localStorage.getItem("userEmail")) {
-      // console.log(Math.round((score / this.state.correctAnswer.length) * 100 * 100) / 100);
-      const newInfo = {
-        moduleCode: this.props.moduleCode,
-        email: localStorage.getItem("userEmail"),
-        score:
-          Math.round((score / this.state.correctAnswer.length) * 100 * 100) /
-          100,
-        lastSubmitedDate
-      };
-      axios.post("/manageScore", newInfo).then(res => console.log(res.data));
+    if (this.state.finished) {
+      answers.forEach(answer => {
+        if (this.state.correctAnswer.indexOf(md5(answer)) !== -1) score++;
+      });
+      if (localStorage.getItem("userEmail")) {
+        const newInfo = {
+          moduleCode: this.props.moduleCode,
+          email: localStorage.getItem("userEmail"),
+          score:
+            Math.round((score / this.state.correctAnswer.length) * 100 * 100) /
+            100,
+          lastSubmitedDate
+        };
+        axios.post("/manageScore", newInfo).then(res => console.log(res.data));
+      }
+      localStorage.setItem("studentAnswer", JSON.stringify(answers));
+      this.setState({ redirect: true });
+    } else {
+      this.setState({ hidden: false });
     }
-    localStorage.setItem("studentAnswer", JSON.stringify(answers));
-    this.setState({ redirect: true });
     // axios.post("/handlequiz");
   }
 
@@ -149,10 +159,13 @@ class QuizPage extends Component {
           <h1 className="text-center m-5 p-5">{this.state.moduleTitle}</h1>
           <form onSubmit={this.onSubmit}>
             {this.getQuestions()}
-            <div className="m-5">
+            <div className="m-5 text-center">
               <Button type="submit" className="btn btn-danger col mt-3">
                 Submit
               </Button>
+              <div hidden={this.state.hidden} className="m-5 text-danger">
+                Please finish all questions
+              </div>
             </div>
           </form>
         </Container>

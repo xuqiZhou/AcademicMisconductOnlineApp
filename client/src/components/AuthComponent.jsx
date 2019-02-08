@@ -33,6 +33,12 @@ class AuthComponent extends Component {
       })
       .then(res => {
         this.setState({ user: res.data.authData.user });
+      })
+      .catch(err => {
+        localStorage.removeItem("cool-jwt");
+        localStorage.removeItem("role");
+        localStorage.removeItem("userEmail");
+        this.setState({ redirect: true });
       });
   }
 
