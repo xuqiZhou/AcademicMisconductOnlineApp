@@ -8,9 +8,13 @@ const User = require("../models/User"),
 
 router.use(bodyParser.urlencoded({ extended: false }));
 
+// Get All Modules
+
 router.get("/home", (req, res) => {
   Module.find().then(modules => res.json(modules));
 });
+
+// Get Module Data
 
 router.get("/module/:moduleCode", (req, res) => {
   Module.findOne({ moduleCode: req.params.moduleCode }, (err, module) => {
@@ -19,6 +23,8 @@ router.get("/module/:moduleCode", (req, res) => {
     else res.json(module);
   });
 });
+
+// Get Quiz Data
 
 router.get("/module/quiz/:moduleId", (req, res) => {
   QuizQuestion.find({ moduleId: req.params.moduleId }, (err, quizQuestions) => {
@@ -29,6 +35,8 @@ router.get("/module/quiz/:moduleId", (req, res) => {
     }
   });
 });
+
+// Get Student info
 
 router.get("/studentinfo/:userId", (req, res) => {
   let info = {
@@ -69,6 +77,8 @@ router.get("/studentinfo/:userId", (req, res) => {
   });
 });
 
+// Handle Register
+
 router.post("/handleregister", (req, res) => {
   User.findOne({ email: req.body.email }, (err, user) => {
     if (err) {
@@ -86,6 +96,8 @@ router.post("/handleregister", (req, res) => {
     }
   });
 });
+
+// Get Scores
 
 router.post("/manageScore", (req, res) => {
   let newAnswer = {
@@ -110,6 +122,8 @@ router.post("/manageScore", (req, res) => {
   );
 });
 
+// Handle Password Change
+
 router.post("/changepassword", (req, res) => {
   User.findOne({ email: req.body.email }, (err, user) => {
     if (err) console.log(`Error finding user: ${user} Error: ${user}`);
@@ -127,6 +141,8 @@ router.post("/changepassword", (req, res) => {
     }
   });
 });
+
+// Authentication
 
 router.post("/getToken", (req, res) => {
   User.findOne({ email: req.body.email }, (err, user) => {

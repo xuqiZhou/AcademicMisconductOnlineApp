@@ -26,20 +26,15 @@ class Editor extends Component {
     fetch(`/admin/edit/editmodule/${this.props._id}`)
       .then(res => res.json())
       .then(module =>
-        this.setState(
-          {
-            moduleId: module._id,
-            moduleCode: module.moduleCode,
-            title: module.title,
-            body: module.body,
-            createdDate: module.createdDate,
-            lastModified: module.lastModified,
-            public: module.public
-          },
-          () => {
-            console.log(this.state);
-          }
-        )
+        this.setState({
+          moduleId: module._id,
+          moduleCode: module.moduleCode,
+          title: module.title,
+          body: module.body,
+          createdDate: module.createdDate,
+          lastModified: module.lastModified,
+          public: module.public
+        })
       );
   }
 

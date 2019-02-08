@@ -96,8 +96,6 @@ class StudentScore extends Component {
               </tr>
             </thead>
             <tbody>
-              {/* Sort acorrding to Date */}
-              {console.log(this.state.studentInfo)}
               {this.state.studentInfo
                 .sort(function(a, b) {
                   return (

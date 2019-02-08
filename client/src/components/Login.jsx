@@ -34,8 +34,6 @@ class EntryPage extends Component {
           localStorage.setItem("cool-jwt", res.data.token);
           localStorage.setItem("role", res.data.type);
           localStorage.setItem("userEmail", res.data.email);
-          console.log("Hello from login");
-
           this.props.loginSuccess();
           this.setState({ role: res.data.type, redirect: true });
         } else {

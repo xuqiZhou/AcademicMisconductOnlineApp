@@ -4,7 +4,7 @@ const Module = require("../models/Module");
 const User = require("../models/User");
 const QuizQuestion = require("../models/QuizQuestion");
 
-// Get all modules
+// Get All Modules
 router.get("/", (err, res) => {
   Module.find((err, modules) => {
     if (err) console.log(err);
@@ -14,7 +14,7 @@ router.get("/", (err, res) => {
   });
 });
 
-// Get Module Content for id
+// Get Module Content
 router.get("/editmodule/:_id", (req, res) => {
   Module.findById(req.params._id, (err, module) => {
     if (err) console.log(`Error finding module: ${module} Error: ${module}`);
@@ -23,7 +23,7 @@ router.get("/editmodule/:_id", (req, res) => {
   });
 });
 
-// Get Quiz Questions with module id
+// Get Quiz Questions
 router.get("/editmodule/quiz/:_id", (req, res) => {
   QuizQuestion.find({ moduleId: req.params._id }, (err, quizQuestions) => {
     if (err) console.log(`Error finding module: ${module} Error: ${module}`);
@@ -34,7 +34,7 @@ router.get("/editmodule/quiz/:_id", (req, res) => {
   });
 });
 
-// Get Quiz Questions with question id
+// Get Quiz Questions
 router.get("/editmodule/quiz/question/:_id", (req, res) => {
   QuizQuestion.findById(req.params._id, (err, question) => {
     if (err)
