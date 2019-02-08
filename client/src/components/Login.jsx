@@ -34,6 +34,9 @@ class EntryPage extends Component {
           localStorage.setItem("cool-jwt", res.data.token);
           localStorage.setItem("role", res.data.type);
           localStorage.setItem("userEmail", res.data.email);
+          console.log("Hello from login");
+
+          this.props.loginSuccess();
           this.setState({ role: res.data.type, redirect: true });
         } else {
           if (res.data.errMessage === "User Not Exist") {
@@ -83,7 +86,7 @@ class EntryPage extends Component {
           </a>
         </nav>
         <Container className="text-center" style={{ marginTop: "18rem" }}>
-          <h1>Login/sadfj</h1>
+          <h1>Login/newest</h1>
           <div className="row">
             <div className="col-none col-md-3" />
             <div className="col col-md-6">

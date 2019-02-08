@@ -1,6 +1,6 @@
 // /* jshint ignore:start */
 import React, { Component } from "react";
-import { BrowserRouter as Router } from "react-router-dom";
+import { BrowserRouter as Router, Switch } from "react-router-dom";
 import Route from "react-router-dom/Route";
 // App Components
 import Register from "./components/Register";
@@ -19,13 +19,24 @@ import GradePage from "./components/GradePage";
 import AuthComponent from "./components/AuthComponent";
 
 class App extends Component {
-  state = {};
+  state = { role: undefined };
+
+  LoginSuccess = () => {
+    console.log("Hello from app");
+    this.setState({ role: localStorage.getItem("role") });
+    console.log(this.state);
+  };
 
   render() {
     return (
       <Router>
-        <div>
-          <Route exact strict path="/" render={() => <Login />} />
+        <Switch>
+          <Route
+            exact
+            strict
+            path="/"
+            render={() => <Login loginSuccess={this.LoginSuccess} />}
+          />
           <Route
             exact
             path="/changepassword"
@@ -61,7 +72,7 @@ class App extends Component {
             )}
           />
           {/* student routes */}
-          <AuthComponent userType="student">
+          <AuthComponent userType={this.state.role}>
             <Route
               exact
               strict
@@ -98,9 +109,8 @@ class App extends Component {
                 <GradePage type="student" userId={match.params.userId} />
               )}
             />
-          </AuthComponent>
-          {/* admin routes */}
-          <AuthComponent userType="admin">
+            {/* admin routes */}
+
             <Route
               exact
               path="/admin/home"
@@ -153,7 +163,7 @@ class App extends Component {
               render={({ match }) => <StudentScore type="admin" />}
             />
           </AuthComponent>
-        </div>
+        </Switch>
       </Router>
     );
   }

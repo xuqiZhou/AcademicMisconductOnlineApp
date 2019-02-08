@@ -34,7 +34,7 @@ class Grade extends Component {
       return a.date - b.date;
     });
     for (let i = 0; i < this.state.headerLength; i++) {
-      if (ansForMod[i] !== undefined) scoreArray.push(ansForMod[i].score);
+      if (ansForMod[i] !== undefined) scoreArray.push(ansForMod[i].score + "%");
       else scoreArray.push(" ");
     }
     return scoreArray.map(score => (

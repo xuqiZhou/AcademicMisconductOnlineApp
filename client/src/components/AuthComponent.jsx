@@ -13,6 +13,8 @@ class AuthComponent extends Component {
   }
 
   componentDidMount() {
+    console.log(this.props.userType);
+
     this.getUser();
   }
 
@@ -41,6 +43,7 @@ class AuthComponent extends Component {
   render() {
     if (this.state.user === undefined)
       return <div>{this.renderRedirect()}</div>;
+    // return <h1>Loading...</h1>;
 
     return this.props.children;
   }
