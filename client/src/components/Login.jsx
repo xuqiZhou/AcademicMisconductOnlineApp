@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Container, Button } from "reactstrap";
-import { Label, Input, FormGroup } from "reactstrap";
+import { Label, Input, FormGroup, FormFeedback } from "reactstrap";
 import { Link, Redirect } from "react-router-dom";
 import md5 from "md5";
 import axios from "axios";
@@ -14,7 +14,11 @@ class EntryPage extends Component {
       email: "",
       password: "",
       role: "",
-      redirect: false
+      redirect: false,
+      invalidEmail: false,
+      invalidPassword: false,
+      emailErrMessage: "",
+      passErrMessage: ""
     };
   }
 
@@ -26,12 +30,26 @@ class EntryPage extends Component {
         password: this.state.password
       })
       .then(res => {
-        console.log(res.data);
-
-        localStorage.setItem("cool-jwt", res.data.token);
-        localStorage.setItem("role", res.data.type);
-        localStorage.setItem("userEmail", res.data.email);
-        this.setState({ role: res.data.type, redirect: true });
+        if (res.data.success === true) {
+          localStorage.setItem("cool-jwt", res.data.token);
+          localStorage.setItem("role", res.data.type);
+          localStorage.setItem("userEmail", res.data.email);
+          this.setState({ role: res.data.type, redirect: true });
+        } else {
+          if (res.data.errMessage === "User Not Exist") {
+            this.setState({
+              emailErrMessage: res.data.errMessage,
+              invalidEmail: true,
+              invalidPassword: false
+            });
+          }
+          if (res.data.errMessage === "Password Not Correct")
+            this.setState({
+              passErrMessage: res.data.errMessage,
+              invalidPassword: true,
+              invalidEmail: false
+            });
+        }
       })
       .catch(() =>
         this.setState({
@@ -65,7 +83,7 @@ class EntryPage extends Component {
           </a>
         </nav>
         <Container className="text-center" style={{ marginTop: "18rem" }}>
-          <h1>Login</h1>
+          <h1>Login/sadfj</h1>
           <div className="row">
             <div className="col-none col-md-3" />
             <div className="col col-md-6">
@@ -75,20 +93,24 @@ class EntryPage extends Component {
                   <Input
                     placeholder="username@webmail.uwinnipeg.ca"
                     type="email"
+                    invalid={this.state.invalidEmail === true}
                     onChange={e => {
                       this.setState({ email: e.target.value });
                     }}
                   />
+                  <FormFeedback>{this.state.emailErrMessage}</FormFeedback>
                 </FormGroup>
                 <FormGroup>
                   <Label>Password</Label>
                   <Input
+                    invalid={this.state.invalidPassword === true}
+                    placeholder="Enter your Password"
+                    type="password"
                     onChange={e => {
                       this.setState({ password: md5(e.target.value) });
                     }}
-                    placeholder="Enter your Password"
-                    type="password"
                   />
+                  <FormFeedback>{this.state.passErrMessage}</FormFeedback>
                 </FormGroup>
                 <Button
                   onClick={this.onLogin}
