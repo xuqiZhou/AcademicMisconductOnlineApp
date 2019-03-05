@@ -40,7 +40,7 @@ class Certificate extends Component {
       return (
         <img
           alt="Certificate"
-          className="my-5 by-5"
+          className="my-5 by-5 border border-dark"
           style={{ maxWidth: "100%" }}
           src={this.state.data}
         />
@@ -73,6 +73,22 @@ class Certificate extends Component {
               </Button>
             </div>{" "}
             <div>{this.image()}</div>
+            <Button
+              className="mb-5 text-white"
+              color="dark"
+              hidden={!this.state.hideInput}
+            >
+              <a
+                style={{
+                  color: "inherit",
+                  textDecoration: "none"
+                }}
+                href={this.state.data}
+                download="AMOA Certificate.jpg"
+              >
+                Download
+              </a>
+            </Button>
           </div>
         </Container>
       </React.Fragment>
