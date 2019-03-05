@@ -60,6 +60,7 @@ class StudentScore extends Component {
     return checkmarkArray.map(result => (
       <React.Fragment key={uuid()}>
         <td
+          style={{ background: "red" }}
           className={
             result === true
               ? "text-success text-right"
