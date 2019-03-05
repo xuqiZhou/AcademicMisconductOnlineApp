@@ -143,7 +143,7 @@ class ForgetPassword extends Component {
                   </FormFeedback>
                 </FormGroup>
                 <FormGroup>
-                  <Label>Confrim New Password </Label>
+                  <Label>Confirm New Password </Label>
                   <Input
                     placeholder="New Password"
                     type="password"

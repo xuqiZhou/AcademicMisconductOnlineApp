@@ -18,6 +18,7 @@ class AuthComponent extends Component {
 
   getUser() {
     const jwt = getJwt();
+    console.log(jwt);
     if (!jwt) {
       this.setState({ redirect: true });
       return;

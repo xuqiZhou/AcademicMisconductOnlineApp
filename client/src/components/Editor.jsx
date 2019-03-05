@@ -15,7 +15,8 @@ class Editor extends Component {
       title: "",
       body: "",
       disBtn: false,
-      redirect: false
+      redirect: false,
+      buttonHidden: true
     };
     this.onChange = this.onChange.bind(this);
     this.setRedirect = this.setRedirect.bind(this);
@@ -33,7 +34,8 @@ class Editor extends Component {
           body: module.body,
           createdDate: module.createdDate,
           lastModified: module.lastModified,
-          public: module.public
+          public: module.public,
+          buttonHidden: false
         })
       );
   }
@@ -139,7 +141,12 @@ class Editor extends Component {
           </div>
           <div className="row pb-5">
             <div className="col" />
-            <div className="btn-group" role="group" aria-label="...">
+            <div
+              hidden={this.state.buttonHidden}
+              className="btn-group"
+              role="group"
+              aria-label="..."
+            >
               <Button
                 className="text-white"
                 disabled={this.state.disBtn}
@@ -169,21 +176,22 @@ class Editor extends Component {
 
 Editor.modules = {
   toolbar: [
-    [{ size: [] }],
+    // [{ size: [] }],
     [{ header: [false, 6, 5, 4, 3, 2, 1] }],
     [{ list: "ordered" }, { list: "bullet" }],
     ["bold", "italic", "underline", "strike", "blockquote"],
-    [{ align: ["", "center", "right", "justify"] }],
-    [{ indent: "-1" }, { indent: "+1" }],
-    [({ color: [] }, { background: [] })],
+    // [{ align: ["", "center", "right", "justify"] }],
+    // [{ indent: "-1" }, { indent: "+1" }],
+    [{ color: [] }],
+    [{ background: [] }],
     ["link", "image", "video", "formula"]
   ]
 };
 
 Editor.formats = [
+  "size",
   "header",
   "font",
-  "size",
   "bold",
   "italic",
   "underline",
@@ -197,7 +205,8 @@ Editor.formats = [
   "video",
   "formula",
   "code-block",
-  "align"
+  "align",
+  "center"
 ];
 
 export default Editor;

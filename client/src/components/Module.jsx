@@ -11,7 +11,8 @@ class ModulePage extends Component {
     this.state = {
       title: "",
       body: "",
-      moduleCode: ""
+      moduleCode: "",
+      buttonHidden: true
     };
   }
 
@@ -22,7 +23,8 @@ class ModulePage extends Component {
         this.setState({
           title: module.title,
           body: module.body,
-          moduleCode: module.moduleCode
+          moduleCode: module.moduleCode,
+          buttonHidden: false
         });
       });
   }
@@ -31,11 +33,14 @@ class ModulePage extends Component {
     return (
       <React.Fragment>
         <Navbar role={this.props.type} page="module" />
+        {this.state.buttonHidden ? (
+          <h1 className="text-center m-5 p-5">Loading...</h1>
+        ) : null}
         <div className="container">
           <div className="mx-md-5">
             <h1 className="text-center my-5 py-5">{this.state.title}</h1>
             {renderHTML(this.state.body)}
-            <div className="m-5">
+            <div hidden={this.state.buttonHidden} className="m-5">
               <Link
                 to={this.state.moduleCode + "/quiz"}
                 className="btn btn-danger col mt-3"
@@ -45,7 +50,7 @@ class ModulePage extends Component {
             </div>
           </div>
         </div>
-        <Footer />
+        {this.state.buttonHidden ? null : <Footer />}
       </React.Fragment>
     );
   }

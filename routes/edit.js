@@ -38,7 +38,7 @@ router.get("/editmodule/quiz/:_id", (req, res) => {
 router.get("/editmodule/quiz/question/:_id", (req, res) => {
   QuizQuestion.findById(req.params._id, (err, question) => {
     if (err)
-      console.log(`Error finding question: ${question} Error: ${question}`);
+      console.log(`Error sdf finding question: ${question} Error: ${question}`);
     else if (!question) res.json({ errMassage: "Question not found" });
     else res.json(question);
   });

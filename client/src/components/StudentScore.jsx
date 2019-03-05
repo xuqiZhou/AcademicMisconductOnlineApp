@@ -9,7 +9,8 @@ class StudentScore extends Component {
     super(props);
     this.state = {
       studentInfo: [],
-      moduleInfo: []
+      moduleInfo: [],
+      moduleStuff: []
     };
   }
   componentDidMount() {
@@ -17,21 +18,32 @@ class StudentScore extends Component {
       .then(res => res.json())
       .then(info => {
         let moduleCode = [];
+        let moduleId = [];
+        let moduleInfo = [];
         info.modules.forEach(module => {
           moduleCode.push(module.moduleCode);
+          moduleId.push(module._id);
+          moduleInfo.push({
+            moduleCode: module.moduleCode,
+            moduleId: module._id
+          });
         });
-        this.setState({ studentInfo: info.students, moduleInfo: moduleCode });
+        this.setState({
+          studentInfo: info.students,
+          moduleInfo: moduleCode,
+          moduleStuff: moduleInfo
+        });
       });
   }
 
   getTableContent(student) {
     const answers = student.answer;
     let checkmarkArray = [];
-    const modules = this.state.moduleInfo;
+    const modules = this.state.moduleStuff;
     for (let i = 0; i < modules.length; i++) {
-      const moduleCode = modules[i];
+      const moduleId = modules[i].moduleId;
       const answerForThisModule = answers.filter(
-        answer => answer.module === moduleCode
+        answer => answer.moduleId === moduleId
       );
       let latest = 0;
       let latestScore = null;
@@ -44,6 +56,7 @@ class StudentScore extends Component {
       else if (latestScore === null) checkmarkArray.push(" ");
       else checkmarkArray.push(false);
     }
+
     return checkmarkArray.map(result => (
       <React.Fragment key={uuid()}>
         <td
@@ -79,14 +92,19 @@ class StudentScore extends Component {
         <Navbar role={this.props.type} />
         <Container style={{ minHeight: "700px" }}>
           <h2 className="text-center my-5 py-5">Student Score</h2>
+          <div className="text-right my-5 font-weight-bold">
+            <span className="text-success">&#10004;</span> Passed
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <span className="text-danger">&#x2718;</span> Did not pass
+          </div>
           <Table responsive striped hover>
             <thead>
               <tr>
                 <th scope="col">Account</th>
-                {this.state.moduleInfo.map(moduleCode => (
+                {this.state.moduleStuff.map(moduleInfo => (
                   <React.Fragment key={uuid()}>
                     <th className="text-right" scope="col">
-                      {moduleCode}
+                      {moduleInfo.moduleCode}
                     </th>
                   </React.Fragment>
                 ))}

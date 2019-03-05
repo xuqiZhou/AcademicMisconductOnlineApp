@@ -20,7 +20,8 @@ const userSchema = mongoose.Schema({
   },
   lastSubmitedDate: {
     type: Date
-  }
+  },
+  certificate: { data: Buffer, contentType: String }
 });
 
 const User = mongoose.model("User", userSchema);

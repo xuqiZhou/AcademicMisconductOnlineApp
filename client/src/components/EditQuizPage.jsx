@@ -57,17 +57,24 @@ class EditQuizPage extends Component {
       question: this.state.quizQuestion,
       options: this.state.options
     };
-    axios.post("/admin/edit/editmodule/quiz/:_id", newQuestion).then(res => {
-      let quizQuestions = this.state.quizQuestions;
-      quizQuestions.push(res.data);
-      this.setState({
-        options: ["", ""],
-        quizQuestion: "",
-        questionPanelHide: true,
-        quizQuestions
+    let minOptLen = 1;
+    for (let i = 0; i < newQuestion.options.length; i++) {
+      if (newQuestion.options[i].length < minOptLen) minOptLen = 0;
+    }
+    if (minOptLen !== 0 && this.state.quizQuestion.length !== 0) {
+      axios.post("/admin/edit/editmodule/quiz/:_id", newQuestion).then(res => {
+        let quizQuestions = this.state.quizQuestions;
+        quizQuestions.push(res.data);
+        this.setState({
+          options: ["", ""],
+          quizQuestion: "",
+          questionPanelHide: true,
+          quizQuestions
+        });
       });
-    });
+    } else alert("Please dont let input empty");
   }
+
   addOption() {
     const options = this.state.options;
     options.push("");
@@ -144,6 +151,9 @@ class EditQuizPage extends Component {
                 </Button>
               </div>
             </div>
+            <Label>
+              Options (Each question must have at least two options)
+            </Label>
             {this.getOptionInputs()}
             <div className="row py-5">
               <div className="col-md" />
@@ -151,18 +161,18 @@ class EditQuizPage extends Component {
                 <Button
                   color="dark"
                   size="lg"
-                  onClick={this.hideQuestionPanel}
+                  onClick={this.addQuestion}
                   className="text-white"
                 >
-                  Cancel
+                  Add
                 </Button>
                 <Button
                   color="danger"
                   size="lg"
-                  onClick={this.addQuestion}
+                  onClick={this.hideQuestionPanel}
                   className="text-white"
                 >
-                  ADD
+                  Cancel
                 </Button>
               </div>
               <div className="col-md" />
@@ -175,7 +185,7 @@ class EditQuizPage extends Component {
               onClick={this.showQuestionPanel}
               className="text-white"
             >
-              ADD QUESTION
+              Add Question
             </Button>
             <div className="col-md" />
           </div>

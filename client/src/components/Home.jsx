@@ -34,7 +34,7 @@ class Home extends Component {
           />
           <Jumbotron>
             <div className="container">
-              <h2>Academic Misconduct Online Appliaction</h2>
+              <h2>Academic Misconduct Online Application</h2>
               <p className="lead">
                 This site provides a quick introduction to ideas of academic
                 integrity at the University of Winnipeg.

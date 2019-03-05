@@ -1,10 +1,14 @@
 const express = require("express"),
   router = express.Router(),
   bodyParser = require("body-parser"),
-  jwt = require("jsonwebtoken");
+  jwt = require("jsonwebtoken"),
+  path = require("path");
 const User = require("../models/User"),
   QuizQuestion = require("../models/QuizQuestion"),
-  Module = require("../models/Module");
+  Module = require("../models/Module"),
+  Jimp = require("jimp"),
+  sizeOf = require("image-size"),
+  base64Img = require("base64-img");
 
 router.use(bodyParser.urlencoded({ extended: false }));
 
@@ -87,6 +91,7 @@ router.post("/handleregister", (req, res) => {
       new User({
         email: req.body.email,
         password: req.body.password,
+        certificate: null,
         type: "student"
       })
         .save()
@@ -97,10 +102,78 @@ router.post("/handleregister", (req, res) => {
   });
 });
 
+// Handle Certificate
+
+router.post("/handlecertificate", (req, res) => {
+  let imgRaw = "img/raw/CertificateTemplate.jpg";
+  let imgActive = "img/active/image.jpg";
+  const fileName = req.body._id; // + Date.now();
+
+  let imgExported = `img/export/${fileName}.jpg`;
+  var dimen = sizeOf(imgRaw);
+  let width = dimen.width;
+  let height = dimen.height;
+  let textData = {
+    text: req.body.name, //Text to render
+    maxWidth: width - (5 + 5), //image width - L and R margins
+    maxHeight: height - (5 + 5), //image height - margins
+    placementX: 10, // 10 px L margin
+    placementY: height - (height - (5 + 5)) + 650 // bottom of image = imgHeight - maxHeight + margin (to determine exact placement)
+  };
+  Jimp.read(imgRaw)
+    .then(tpl => tpl.clone().write(imgActive))
+    .then(() => Jimp.read(imgActive))
+    .then(tpl => Jimp.loadFont("img/NameFont.fnt").then(font => [tpl, font]))
+    .then(data => {
+      tpl = data[0];
+      font = data[1];
+      return tpl.print(
+        font,
+        textData.placementX,
+        textData.placementY,
+        {
+          text: textData.text,
+          alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
+          alignmentY: Jimp.VERTICAL_ALIGN_TOP
+        },
+        textData.maxWidth,
+        textData.maxHeight
+      );
+    })
+    .then(tpl => tpl.quality(20).write(imgExported))
+    .catch(err => {
+      console.error(err);
+    });
+  const filePath = path.join(__dirname, `../img/export/${fileName}.jpg`);
+
+  setTimeout(() => {
+    base64Img.base64(filePath, (err, data) => {
+      if (err) console.log(err);
+      else {
+        User.findOneAndUpdate(
+          { _id: req.body._id },
+          { certificate: data },
+          (err, user) => {
+            if (err) console.log(`Error finding user: ${user} Error: ${user}`);
+            else if (!user)
+              res.json({ success: false, errMessage: "User Not Exist" });
+            else {
+              email = user.email;
+              password = user.password;
+              res.json(data);
+            }
+          }
+        );
+      }
+    });
+  }, 3000);
+});
+
 // Get Scores
 
 router.post("/manageScore", (req, res) => {
   let newAnswer = {
+    moduleId: req.body.moduleId,
     module: req.body.moduleCode,
     score: req.body.score,
     date: req.body.lastSubmitedDate
@@ -145,6 +218,8 @@ router.post("/changepassword", (req, res) => {
 // Authentication
 
 router.post("/getToken", (req, res) => {
+  console.log("inside getToken");
+
   User.findOne({ email: req.body.email }, (err, user) => {
     if (err) console.log(`Error finding user: ${user} Error: ${user}`);
     else if (!user) res.json({ success: false, errMessage: "User Not Exist" });
@@ -154,6 +229,7 @@ router.post("/getToken", (req, res) => {
         const email = req.body.email;
         if (user.type === "admin") type = "admin";
         else type = "student";
+        user.certificate = null;
         jwt.sign(
           { user, type },
           type,

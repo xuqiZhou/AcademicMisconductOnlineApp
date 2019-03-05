@@ -21,7 +21,8 @@ class QuizPage extends Component {
       answers: [],
       redirect: false,
       correctAnswer: [],
-      hidden: true
+      hidden: true,
+      buttonHidden: true
     };
   }
 
@@ -53,7 +54,11 @@ class QuizPage extends Component {
           }
           questions[i].options = orderedArray;
         }
-        this.setState({ questions: questions, questionNotFetched: false });
+        this.setState({
+          questions: questions,
+          questionNotFetched: false,
+          buttonHidden: false
+        });
       });
     }
   }
@@ -124,6 +129,7 @@ class QuizPage extends Component {
     });
     if (localStorage.getItem("userEmail")) {
       const newInfo = {
+        moduleId: this.state.moduleId,
         moduleCode: this.props.moduleCode,
         email: localStorage.getItem("userEmail"),
         score:
@@ -156,10 +162,15 @@ class QuizPage extends Component {
         {this.fetchQuestion()}
         <Navbar role={this.props.type} page="quiz" />
         <Container>
-          <h1 className="text-center m-5 p-5">{this.state.moduleTitle}</h1>
+          {this.state.buttonHidden ? (
+            <h1 className="text-center m-5 p-5">Loading...</h1>
+          ) : null}
+          <h1 hidden={this.state.buttonHidden} className="text-center m-5 p-5">
+            {this.state.moduleTitle}
+          </h1>
           <form onSubmit={this.onSubmit}>
             {this.getQuestions()}
-            <div className="m-5 text-center">
+            <div hidden={this.state.buttonHidden} className="m-5 text-center">
               <Button type="submit" className="btn btn-danger col mt-3">
                 Submit
               </Button>
@@ -169,7 +180,7 @@ class QuizPage extends Component {
             </div>
           </form>
         </Container>
-        <Footer />
+        {this.state.buttonHidden ? null : <Footer />}
       </React.Fragment>
     );
   }

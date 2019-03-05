@@ -182,7 +182,7 @@ class QuizQuestions extends Component {
                   onClick={this.saveQuestion}
                   className="text-white"
                 >
-                  SAVE
+                  Save
                 </Button>
               </div>
               <div className="col-md" />

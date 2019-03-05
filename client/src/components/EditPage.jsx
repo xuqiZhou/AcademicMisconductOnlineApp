@@ -218,59 +218,35 @@ class EditPage extends Component {
         {this.renderRedirect()}
         <Navbar role={this.props.type} page="quiz" />
         <Container>
-          <h2 className="text-center mt-5 pt-5">What you can do</h2>
-          <div className="row">
+          <h2 className="text-center mt-5 pt-5">Instruction</h2>
+          <div className="row" style={{ minHeight: "400px" }}>
             <div className="col" />
             <p className="pb-5 m-5">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Repudiandae nulla nisi illo facere corrupti perferendis
-              consectetur voluptatem harum. Harum at velit illum laboriosam
-              debitis. Alias, quis tempore in aliquam ipsum rem fuga modi
-              sapiente quidem distinctio, sequi, unde repudiandae veritatis
-              ducimus error excepturi voluptatibus nam ad qui itaque. Temporibus
-              similique provident eveniet corporis excepturi at aut nihil ex
-              quidem. Itaque facilis voluptate tempore vitae libero illum
-              quaerat, distinctio at officiis, perferendis quidem repellat
-              doloribus obcaecati fugiat voluptatibus iusto optio. Debitis modi,
-              possimus placeat exercitationem quae assumenda delectus
-              consequatur illum alias iste eos pariatur ut corrupti aut tempore
-              voluptatem reiciendis tempora quibusdam eaque error veniam
-              corporis, velit adipisci a? Expedita est perspiciatis tempore
-              tempora. Exercitationem dolorem architecto animi sit consequuntur
-              quia dignissimos ad consectetur modi. Ratione eveniet sunt
-              molestias cum debitis vitae id nihil dicta atque dolor ipsam
-              commodi rerum exercitationem facilis neque natus doloribus eos
-              totam asperiores sed, laudantium tempora. Sint impedit, aspernatur
-              perspiciatis iure mollitia libero doloremque nisi delectus?
-              Incidunt voluptatem earum nulla distinctio placeat beatae atque
-              veritatis cum similique! Obcaecati delectus, temporibus quos, illo
-              commodi provident ducimus dolorum ipsa quia totam velit tempora id
-              officia repudiandae quam eligendi odit minus, recusandae cumque
-              aliquam doloribus beatae. Iste, nemo cumque! Lorem ipsum dolor sit
-              amet consectetur adipisicing elit. Repudiandae nulla nisi illo
-              facere corrupti perferendis consectetur voluptatem harum. Harum at
-              velit illum laboriosam debitis. Alias, quis tempore in aliquam
-              ipsum rem fuga modi sapiente quidem distinctio, sequi, unde
-              repudiandae veritatis ducimus error excepturi voluptatibus nam ad
-              qui itaque. Temporibus similique provident eveniet corporis
-              excepturi at aut nihil ex quidem. Itaque facilis voluptate tempore
-              vitae libero illum quaerat, distinctio at officiis, perferendis
-              quidem repellat doloribus obcaecati fugiat voluptatibus iusto
-              optio. Debitis modi, possimus placeat exercitationem quae
-              assumenda delectus consequatur illum alias iste eos pariatur ut
-              corrupti aut tempore voluptatem reiciendis tempora quibusdam eaque
-              error veniam corporis, velit adipisci a? Expedita est perspiciatis
-              tempore tempora. Exercitationem dolorem architecto animi sit
-              consequuntur quia dignissimos ad consectetur modi. Ratione eveniet
-              sunt molestias cum debitis vitae id nihil dicta atque dolor ipsam
-              commodi rerum exercitationem facilis neque natus doloribus eos
-              totam asperiores sed, laudantium tempora. Sint impedit, aspernatur
-              perspiciatis iure mollitia libero doloremque nisi delectus?
-              Incidunt voluptatem earum nulla distinctio placeat beatae atque
-              veritatis cum similique! Obcaecati delectus, temporibus quos, illo
-              commodi provident ducimus dolorum ipsa quia totam velit tempora id
-              officia repudiandae quam eligendi odit minus, recusandae cumque
-              aliquam doloribus beatae. Iste, nemo cumque!
+              <ul>
+                <li>
+                  From this page, you can create and edit the modules which will
+                  appear for students and guests.
+                </li>
+                <li>
+                  A new module will require a unique module code, composed of
+                  letters and/or numbers. New modules are "hidden" by defualt,
+                  and cannot be viewed.
+                </li>
+                <li>
+                  Click "edit existing module" to see a list of all modules.
+                  Click the "edit" button beside a module to begin editing. Be
+                  sure to click "save" after making any changes.
+                </li>
+                <li>
+                  When the module's content and quiz are complete, under "edit
+                  existing module," you may click "publish" to make the module
+                  visible to students and guests.
+                </li>
+                <li>
+                  To delete a module, click "delete" beside the module you wish
+                  to delete. Be careful, as deleted modules cannot be recovered.
+                </li>
+              </ul>
             </p>
             <div className="col" />
           </div>
