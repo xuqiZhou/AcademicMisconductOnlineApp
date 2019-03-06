@@ -38,6 +38,7 @@ class StudentScore extends Component {
 
   getTableContent(student) {
     const answers = student.answer;
+    console.log(student._id, student.allPassed);
     let checkmarkArray = [];
     const modules = this.state.moduleStuff;
     for (let i = 0; i < modules.length; i++) {
@@ -48,19 +49,17 @@ class StudentScore extends Component {
       let latest = 0;
       let latestScore = null;
       for (let j = 0; j < answerForThisModule.length; j++) {
-        if (answerForThisModule[j].date > latest) {
+        if (answerForThisModule[j].date > latest)
           latestScore = answerForThisModule[j].score;
-        }
       }
       if (latestScore === 100) checkmarkArray.push(true);
       else if (latestScore === null) checkmarkArray.push(" ");
       else checkmarkArray.push(false);
     }
-
     return checkmarkArray.map(result => (
       <React.Fragment key={uuid()}>
         <td
-          style={{ background: "red" }}
+          style={this.getBackgroundColor(student)}
           className={
             result === true
               ? "text-success text-right"
@@ -85,6 +84,10 @@ class StudentScore extends Component {
       return `${new Date(date).toDateString()} ${new Date(
         date
       ).toLocaleTimeString()}`;
+  }
+
+  getBackgroundColor(student) {
+    return student.allPassed ? { background: "#FFEF7A" } : null;
   }
 
   render() {
@@ -124,9 +127,14 @@ class StudentScore extends Component {
                 .map(student => (
                   <React.Fragment key={student._id}>
                     <tr>
-                      <th scope="row">{student.email}</th>
+                      <th style={this.getBackgroundColor(student)} scope="row">
+                        {student.email}
+                      </th>
                       {this.getTableContent(student)}
-                      <td className="text-right">
+                      <td
+                        style={this.getBackgroundColor(student)}
+                        className="text-right"
+                      >
                         {this.getDateTime(student.lastSubmitedDate)}
                       </td>
                     </tr>

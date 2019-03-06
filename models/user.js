@@ -21,7 +21,10 @@ const userSchema = mongoose.Schema({
   lastSubmitedDate: {
     type: Date
   },
-  certificate: { data: Buffer, contentType: String }
+  certificate: { data: Buffer, contentType: String },
+  allPassed: {
+    type: Boolean
+  }
 });
 
 const User = mongoose.model("User", userSchema);

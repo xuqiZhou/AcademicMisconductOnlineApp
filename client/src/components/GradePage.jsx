@@ -36,6 +36,8 @@ class Grade extends Component {
             moduleId: module._id
           });
         });
+        console.log(info.student);
+
         this.setState({ studentInfo: info.student, moduleInfo, passedModule });
       });
   }
@@ -68,11 +70,7 @@ class Grade extends Component {
   }
 
   getCertificate() {
-    let passedCount = 0;
-    for (let i = 0; i < this.state.passedModule.length; i++) {
-      if (this.state.passedModule[i] === true) passedCount++;
-    }
-    if (passedCount !== 0 && passedCount === this.state.moduleInfo.length) {
+    if (this.state.studentInfo.allPassed === true) {
       return (
         <Certificate
           studentInfo={this.state.studentInfo}
@@ -80,6 +78,18 @@ class Grade extends Component {
         />
       );
     }
+    // let passedCount = 0;
+    // for (let i = 0; i < this.state.passedModule.length; i++) {
+    //   if (this.state.passedModule[i] === true) passedCount++;
+    // }
+    // if (passedCount !== 0 && passedCount === this.state.moduleInfo.length) {
+    //   return (
+    //     <Certificate
+    //       studentInfo={this.state.studentInfo}
+    //       _id={this.state.studentInfo._id}
+    //     />
+    //   );
+    // }
   }
 
   render() {

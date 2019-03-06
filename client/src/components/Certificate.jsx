@@ -74,7 +74,11 @@ class Certificate extends Component {
             </div>{" "}
             <div>{this.image()}</div>
             <Button
-              className="mb-5 text-white"
+              style={{
+                color: "inherit",
+                textDecoration: "none"
+              }}
+              className="mb-5 btn-lg text-white"
               color="dark"
               hidden={!this.state.hideInput}
             >

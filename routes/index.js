@@ -107,9 +107,6 @@ router.post("/handleregister", (req, res) => {
 router.post("/handlecertificate", (req, res) => {
   let imgRaw = "img/raw/CertificateTemplate.jpg";
   let imgActive = "img/active/image.jpg";
-  const fileName = req.body._id; // + Date.now();
-
-  let imgExported = `img/export/${fileName}.jpg`;
   var dimen = sizeOf(imgRaw);
   let width = dimen.width;
   let height = dimen.height;
@@ -140,19 +137,11 @@ router.post("/handlecertificate", (req, res) => {
         textData.maxHeight
       );
     })
-    .then(tpl => tpl.quality(20).write(imgExported))
-    .catch(err => {
-      console.error(err);
-    });
-  const filePath = path.join(__dirname, `../img/export/${fileName}.jpg`);
-
-  setTimeout(() => {
-    base64Img.base64(filePath, (err, data) => {
-      if (err) console.log(err);
-      else {
+    .then(tpl =>
+      tpl.quality(20).getBase64(Jimp.MIME_JPEG, (err, result) => {
         User.findOneAndUpdate(
           { _id: req.body._id },
-          { certificate: data },
+          { certificate: result },
           (err, user) => {
             if (err) console.log(`Error finding user: ${user} Error: ${user}`);
             else if (!user)
@@ -160,13 +149,15 @@ router.post("/handlecertificate", (req, res) => {
             else {
               email = user.email;
               password = user.password;
-              res.json(data);
+              res.json(result);
             }
           }
         );
-      }
+      })
+    )
+    .catch(err => {
+      console.error(err);
     });
-  }, 3000);
 });
 
 // Get Scores
@@ -178,21 +169,102 @@ router.post("/manageScore", (req, res) => {
     score: req.body.score,
     date: req.body.lastSubmitedDate
   };
-  User.findOneAndUpdate(
-    { email: req.body.email },
-    {
-      $push: { answer: newAnswer },
-      lastSubmitedDate: req.body.lastSubmitedDate
-    },
-    (err, user) => {
-      if (err) console.log(`Error finding user: ${user} Error: ${user}`);
-      else if (!user)
-        res.json({ success: false, errMessage: "User Not Exist" });
-      else {
-        answer = user.answer;
-      }
-    }
-  );
+
+  let info = {
+    modules: [],
+    answers: []
+  };
+
+  const storeInfo = () => {
+    return new Promise((resolve, reject) => {
+      User.findOneAndUpdate(
+        { email: req.body.email },
+        {
+          $push: { answer: newAnswer },
+          lastSubmitedDate: req.body.lastSubmitedDate
+        },
+        (err, user) => {
+          if (err) console.log(`Error finding user: ${user} Error: ${user}`);
+          else if (!user)
+            res.json({ success: false, errMessage: "User Not Exist" });
+          else {
+            // res.json({ success: true });
+            resolve(user);
+            answer = user.answer;
+          }
+        }
+      );
+    });
+  };
+
+  const getModule = () => {
+    return new Promise((resolve, reject) => {
+      Module.find({ public: true }, (err, modules) => {
+        if (err) console.log(`Error finding modules: ${modules} Error: ${err}`);
+        else if (!modules)
+          res.json({ errMassage: "No Module in the database" });
+        else {
+          resolve(modules);
+        }
+      });
+    });
+  };
+
+  const getStudent = () => {
+    return new Promise((resolve, reject) => {
+      User.findOne({ email: req.body.email }, (err, students) => {
+        if (err)
+          console.log(`Error finding students: ${students} Error: ${err}`);
+        else if (!students)
+          res.json({ errMassage: "No Student in the database" });
+        else {
+          resolve(students);
+        }
+      });
+    });
+  };
+
+  storeInfo().then(user => {
+    getModule().then(modules => {
+      modules.forEach(module => {
+        info.modules.push({ moduleId: module._id });
+      });
+      getStudent().then(student => {
+        info.answers = student.answer;
+        let passedCount = [];
+        info.modules.forEach((module, index) => {
+          const moduleId = module.moduleId;
+          info.answers.forEach(ansEntry => {
+            if (
+              (ansEntry.moduleId == moduleId && ansEntry.score === 100) ||
+              passedCount[index] === true
+            )
+              passedCount[index] = true;
+            else passedCount[index] = false;
+          });
+        });
+        let count = 0;
+        passedCount.forEach(cnt => {
+          if (cnt === true) count++;
+        });
+        if (count === info.modules.length) {
+          User.findOneAndUpdate(
+            { email: req.body.email },
+            { allPassed: true },
+            (err, user) => {
+              if (err)
+                console.log(`Error finding user: ${user} Error: ${user}`);
+              else if (!user)
+                res.json({ success: false, errMessage: "User Not Exist" });
+              else {
+                res.json(user);
+              }
+            }
+          );
+        } else console.log("dont set flag");
+      });
+    });
+  });
 });
 
 // Handle Password Change
