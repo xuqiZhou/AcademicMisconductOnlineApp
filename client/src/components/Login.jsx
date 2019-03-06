@@ -10,6 +10,7 @@ class EntryPage extends Component {
   constructor() {
     super();
     this.onLogin = this.onLogin.bind(this);
+    this.keyPressLogin = this.keyPressLogin.bind(this);
     this.state = {
       email: "",
       password: "",
@@ -66,6 +67,10 @@ class EntryPage extends Component {
     }
   };
 
+  keyPressLogin(e) {
+    if (e.key === "Enter") this.onLogin(e);
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -83,7 +88,11 @@ class EntryPage extends Component {
             />
           </a>
         </nav>
-        <Container className="text-center" style={{ marginTop: "18rem" }}>
+        <Container
+          onKeyPress={this.keyPressLogin}
+          className="text-center"
+          style={{ marginTop: "18rem" }}
+        >
           <h1>Login</h1>
           <div className="row">
             <div className="col-none col-md-3" />
