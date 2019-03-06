@@ -78,18 +78,6 @@ class Grade extends Component {
         />
       );
     }
-    // let passedCount = 0;
-    // for (let i = 0; i < this.state.passedModule.length; i++) {
-    //   if (this.state.passedModule[i] === true) passedCount++;
-    // }
-    // if (passedCount !== 0 && passedCount === this.state.moduleInfo.length) {
-    //   return (
-    //     <Certificate
-    //       studentInfo={this.state.studentInfo}
-    //       _id={this.state.studentInfo._id}
-    //     />
-    //   );
-    // }
   }
 
   render() {
@@ -150,7 +138,6 @@ class Grade extends Component {
     return scoreArray.map(score => (
       <React.Fragment key={uuid()}>
         <td className="text-center">{score}</td>
-        {/* <MyTooltip /> */}
       </React.Fragment>
     ));
   }

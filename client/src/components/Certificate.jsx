@@ -19,14 +19,12 @@ class Certificate extends Component {
   onClick(e) {
     e.preventDefault();
     this.setState({ loading: true });
-    console.log(this.props._id);
     axios
       .post("/handlecertificate", {
         name: this.state.name,
         _id: this.props._id
       })
       .then(res => {
-        console.log(res.data);
         this.setState({ data: res.data, hideInput: true });
       });
   }
@@ -36,7 +34,6 @@ class Certificate extends Component {
       if (this.state.loading === true) return <div>Loading</div>;
       else return null;
     } else {
-      console.log("Not null");
       return (
         <img
           alt="Certificate"

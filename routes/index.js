@@ -290,8 +290,6 @@ router.post("/changepassword", (req, res) => {
 // Authentication
 
 router.post("/getToken", (req, res) => {
-  console.log("inside getToken");
-
   User.findOne({ email: req.body.email }, (err, user) => {
     if (err) console.log(`Error finding user: ${user} Error: ${user}`);
     else if (!user) res.json({ success: false, errMessage: "User Not Exist" });

@@ -61,12 +61,22 @@ class StudentScore extends Component {
         <td
           style={this.getBackgroundColor(student)}
           className={
-            result === true
+            student.allPassed === true
+              ? "text-success text-right"
+              : result === true
               ? "text-success text-right"
               : "text-danger text-right"
           }
         >
-          {result === true ? (
+          {student.allPassed === true ? (
+            result === true ? (
+              <span>&#10004;</span>
+            ) : result === " " ? (
+              " "
+            ) : (
+              <span>&#10004;</span>
+            )
+          ) : result === true ? (
             <span>&#10004;</span>
           ) : result === " " ? (
             " "
@@ -100,6 +110,11 @@ class StudentScore extends Component {
             <span className="text-success">&#10004;</span> Passed
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <span className="text-danger">&#x2718;</span> Did not pass
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <span style={{ background: "#FFEF7A" }} className="text-danger">
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </span>
+            &nbsp;&nbsp;Course completed
           </div>
           <Table responsive striped hover>
             <thead>
