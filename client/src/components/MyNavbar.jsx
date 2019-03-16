@@ -1,7 +1,8 @@
 /* jshint ignore: start */
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import UWImage from "../UW_left-stack_white.png";
+import UWImage from "../UW_left-stack_rgb-white.png";
+import UWImageWide from "../UW_horiz_rgb-white.png" ;
 import Modal from "./Modal";
 
 class MyNavbar extends Component {
@@ -14,23 +15,30 @@ class MyNavbar extends Component {
     guest: [{ name: "Home", href: "/home" }]
   };
   styles = {
-    logo: { width: "8rem" }
+    logo: { height: "3rem" }
   };
 
   render() {
     return (
       <React.Fragment>
         <nav
-          style={{ borderRadius: 0, position: "fixed !important" }}
-          className="navbar navbar-expand-lg bg-dark fixed-top mb-0"
+          style={{ backgroundColor: 'rgb(238,42,55)' , borderRadius: 0, position: "fixed !important"}}
+          className="navbar navbar-expand-lg fixed-top mb-0"
         >
-          <a className="nav-link" href="https://www.uwinnipeg.ca/">
-            <img
-              src={UWImage}
-              style={this.styles.logo}
-              className="img-fluid"
-              alt="UW logo"
-            />
+          <a className="nav-link navbar-brand visible-xs" href="https://www.uwinnipeg.ca/">
+            <img src={UWImage} style={this.styles.logo} className="img-fluid" alt="UW logo"/>
+          </a> 
+
+          <a className="nav-link navbar-brand visible-sm" href="https://www.uwinnipeg.ca/">
+            <img src={UWImageWide} style={this.styles.logo} className="img-fluid" alt="UW logo"/>
+          </a>
+
+          <a className="nav-link navbar-brand visible-md" href="https://www.uwinnipeg.ca/">
+            <img src={UWImageWide} style={this.styles.logo} className="img-fluid" alt="UW logo"/>
+          </a>
+
+          <a className="nav-link navbar-brand visible-lg" href="https://www.uwinnipeg.ca/">
+            <img src={UWImageWide} style={this.styles.logo} className="img-fluid" alt="UW logo"/>
           </a>
           <button
             className="navbar-toggler"
