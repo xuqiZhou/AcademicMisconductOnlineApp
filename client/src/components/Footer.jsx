@@ -20,7 +20,7 @@ class Footer extends Component {
   render() {
     return (
       <React.Fragment>
-        <div className="card text-secondary bg-dark text-center">
+        <div className="card text-secondary bg-dark text-center col-sm-12">
           <div className="card-header" />
           <div className="card-body container">
             <div className="row text-center">
