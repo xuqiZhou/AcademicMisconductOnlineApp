@@ -2,6 +2,8 @@ const express = require("express"),
   bodyParser = require("body-parser"),
   mongoose = require("mongoose"),
   db = require("./config/keys").mongoURI;
+const seedDB = require("./models/seed");
+const User = require("./models/User");
 // Routes
 const mainRoutes = require("./routes");
 const edit = require("./routes/edit");
@@ -19,6 +21,8 @@ mongoose
     console.log("MongoDB Connected...");
   })
   .catch(err => console.log(err));
+
+seedDB.seed(User);
 
 app.use((req, res, next) => {
   res.locals.showTests =

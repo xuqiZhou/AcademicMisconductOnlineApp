@@ -5,11 +5,13 @@ import { Link, Redirect } from "react-router-dom";
 import md5 from "md5";
 import axios from "axios";
 import UWImage from "../UW_left-stack_white.png";
+import UWImageWide from "../UW_horiz_rgb-white.png" ;
 
 class EntryPage extends Component {
   constructor() {
     super();
     this.onLogin = this.onLogin.bind(this);
+    this.keyPressLogin = this.keyPressLogin.bind(this);
     this.state = {
       email: "",
       password: "",
@@ -66,24 +68,39 @@ class EntryPage extends Component {
     }
   };
 
+  keyPressLogin(e) {
+    if (e.key === "Enter") this.onLogin(e);
+  }
+
   render() {
     return (
       <React.Fragment>
         {this.renderRedirect()}
         <nav
-          style={{ borderRadius: 0, position: "fixed !important" }}
-          className="navbar navbar-expand-lg bg-dark mb-0"
+          style={{ backgroundColor: 'rgb(238,42,55)' , borderRadius: 0, position: "fixed !important"}}
+          className="navbar navbar-expand-lg fixed-top mb-0"
         >
-          <a className="nav-link" href="https://www.uwinnipeg.ca/">
-            <img
-              src={UWImage}
-              style={{ width: "8rem" }}
-              className="img-fluid"
-              alt="UW logo"
-            />
+          <a className="nav-link navbar-brand visible-xs" href="https://www.uwinnipeg.ca/">
+            <img src={UWImage} style={{height: "3rem"}} className="img-fluid" alt="UW logo"/>
+          </a> 
+
+          <a className="nav-link navbar-brand visible-sm" href="https://www.uwinnipeg.ca/">
+            <img src={UWImageWide} style={{height: "3rem"}} className="img-fluid" alt="UW logo"/>
+          </a>
+
+          <a className="nav-link navbar-brand visible-md" href="https://www.uwinnipeg.ca/">
+            <img src={UWImageWide} style={{height: "3rem"}} className="img-fluid" alt="UW logo"/>
+          </a>
+
+          <a className="nav-link navbar-brand visible-lg" href="https://www.uwinnipeg.ca/">
+            <img src={UWImageWide} style={{height: "3rem"}} className="img-fluid" alt="UW logo"/>
           </a>
         </nav>
-        <Container className="text-center" style={{ marginTop: "18rem" }}>
+        <Container
+          onKeyPress={this.keyPressLogin}
+          className="text-center"
+          style={{ marginTop: "18rem" }}
+        >
           <h1>Login</h1>
           <div className="row">
             <div className="col-none col-md-3" />
