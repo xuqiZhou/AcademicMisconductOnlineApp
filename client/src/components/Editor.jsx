@@ -41,7 +41,7 @@ class Editor extends Component {
   }
 
   onChange(e) {
-    this.setState({ body: e });
+    this.setState({ body: e, disBtn: false });
   }
 
   onSave(e) {
@@ -103,7 +103,7 @@ class Editor extends Component {
                   this.state.title === "" ? "Module Code" : this.state.title
                 }
                 onChange={e => {
-                  this.setState({ moduleCode: e.target.value });
+                  this.setState({ moduleCode: e.target.value, disBtn: false });
                 }}
               />
             </FormGroup>
@@ -120,7 +120,7 @@ class Editor extends Component {
                   this.state.title === "" ? "Title" : this.state.title
                 }
                 onChange={e => {
-                  this.setState({ title: e.target.value });
+                  this.setState({ title: e.target.value, disBtn: false });
                 }}
               />
             </FormGroup>

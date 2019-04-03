@@ -101,8 +101,8 @@ class MyModal extends Component {
     //this will give different types of modal based on users' login statuses
     if (loginStatus.toUpperCase() === "ADMIN") {
       return {
-        type: "Settings",
-        title: "Settings",
+        type: "More",
+        title: "More",
         body: [
           <Link
             style={{ textDecoration: "none", color: "black" }}
@@ -120,8 +120,8 @@ class MyModal extends Component {
       };
     } else if (loginStatus.toUpperCase() === "STUDENT") {
       return {
-        type: "Settings",
-        title: "Student Settings",
+        type: "More",
+        title: "More",
         body: [
           <div style={{ cursor: "pointer" }} onClick={this.myGradeClicked}>
             My Grades

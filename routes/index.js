@@ -1,14 +1,12 @@
 const express = require("express"),
   router = express.Router(),
   bodyParser = require("body-parser"),
-  jwt = require("jsonwebtoken"),
-  path = require("path");
+  jwt = require("jsonwebtoken");
 const User = require("../models/User"),
   QuizQuestion = require("../models/QuizQuestion"),
   Module = require("../models/Module"),
   Jimp = require("jimp"),
-  sizeOf = require("image-size"),
-  base64Img = require("base64-img");
+  sizeOf = require("image-size");
 
 router.use(bodyParser.urlencoded({ extended: false }));
 

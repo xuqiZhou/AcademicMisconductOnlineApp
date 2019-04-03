@@ -74,6 +74,11 @@ class Home extends Component {
                   situations. It also describes how to avoid becoming involved
                   in unfair and often uninvited collaborations
                 </p>
+                <p className="m-3">
+                  Students who successfully finished all modules can access your
+                  certificate of completion by going to the My Grades section
+                  under More, at the top-right of the page.
+                </p>
               </div>
             </div>
             <hr style={{ width: "70%" }} />

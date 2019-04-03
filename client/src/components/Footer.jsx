@@ -24,7 +24,7 @@ class Footer extends Component {
           <div className="card-header" />
           <div className="card-body container">
             <div className="row text-center">
-              <p className="col-12 col-md-3">
+              <p className="col-12 col-md-3 text-white">
                 515 Portage Avenue <br />
                 Winnipeg, MB Canada
                 <br />
@@ -32,17 +32,23 @@ class Footer extends Component {
                 P: 204.786.7811
               </p>
               {this.hr()}
-              <p className="col-12 col-md-3">Connect with Uwinnipeg:</p>
+              <p className="col-12 col-md-3 text-white">
+                Connect Administrator at: <br />
+                amoaadmin@uwinnipeg.ca
+              </p>
               {this.hr()}
-              <p className="col-12 col-md-3">One of three columns</p>
+              <p className="col-12 col-md-3">
+                <a href="https://donate.uwinnipeg.ca/">
+                  <h3 className="text-white">
+                    Donate
+                    <br /> Now
+                  </h3>
+                </a>
+              </p>
               {this.hr()}
               <p className="col-12 col-md-3" id="footerInfoLinks">
                 {this.state.links.map(link => (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    className="text-secondary"
-                  >
+                  <a key={link.href} href={link.href} className="text-white">
                     {link.name}
                     <br />
                   </a>
